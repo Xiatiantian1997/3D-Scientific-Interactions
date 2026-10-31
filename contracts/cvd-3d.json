@@ -2,7 +2,7 @@
   "version": "3.0",
   "goal": "在三维中辨认炉壳、石英管、晶舟、端盖及接口，区分观察拆解与真实工艺。",
   "model": {
-    "assumptions": "三维比例与部件数量简化；上下分离是教学剖开，不是实际拆卸顺序；独立Canvas网格投影，没有Anatomy全几何审计。",
+    "assumptions": "比例与片数简化；上下分离是教学剖开；不透明网格采用逐像素深度检测，不代表完整碰撞审计。",
     "evidence": "MKS LPCVD Systems handbook；University of Michigan LNF LPCVD equipment documentation。"
   },
   "states": [
@@ -17,6 +17,10 @@
     {
       "id": "rotated",
       "meaning": "相机旋转"
+    },
+    {
+      "id": "transition",
+      "meaning": "同一组部件连续位移，可中断反向"
     }
   ],
   "encodings": [
@@ -33,13 +37,6 @@
       "token": "heater",
       "role": "identity",
       "meaning": "电阻加热区"
-    },
-    {
-      "scope": "all",
-      "channel": "dash motion",
-      "token": "flow",
-      "role": "quantity",
-      "meaning": "气体流向示意，不是分子轨迹"
     }
   ],
   "actions": [
@@ -89,36 +86,41 @@
   },
   "preserved": [
     {
-      "feature": "自动动画、手机布局",
+      "feature": "展开、合拢、旋转、视角复位与部件解释",
       "status": "retained",
-      "evidence": "自动气流示意与可见暂停入口"
+      "evidence": "浏览器验证展开、合拢、旋转；原部件解释保留"
+    },
+    {
+      "feature": "手机布局与双指缩放",
+      "status": "retained",
+      "evidence": "保留触摸手势，新增可见缩放替代入口；真机待测"
     }
   ],
   "checks": [
     {
       "area": "model",
       "status": "tested",
-      "evidence": "check-cvd-geometry.cjs: 35 pose/angle cases, finite vertices/projections, fixed wafer span and staged door/boat separation; not collision audit."
+      "evidence": "35 组姿态投影、晶圆组间距、分离先后通过；不是全碰撞审计"
     },
     {
       "area": "semantics",
       "status": "reviewed",
-      "evidence": "Components retain identity; cutaway labeled as teaching observation; assembled and apart states not deposition dynamics."
+      "evidence": "实体颜色身份保持；拆解明确标为观察而非运行"
     },
     {
       "area": "interaction",
       "status": "tested",
-      "evidence": "Browser set explode to 1000 and rotated right; matched visible state and screenshot. Script syntax checked."
+      "evidence": "浏览器展开、反向合拢与旋转；统一进度保持组件关联"
     },
     {
       "area": "layout",
       "status": "tested",
-      "evidence": "Browser default desktop and 320px container screenshots; controls wrap. Canvas height subsequently tied to component width."
+      "evidence": "浏览器默认与完全展开、320px 容器检查；修正顶部裁切"
     },
     {
       "area": "host",
       "status": "pending",
-      "evidence": "Browser preview tested; Android pinch and actual device performance unverified."
+      "evidence": "Canvas 软件深度缓冲已运行；WebGL 硬件路径和 Android 双指仍待测"
     }
   ]
 }
