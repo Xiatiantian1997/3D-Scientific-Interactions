@@ -46,3 +46,30 @@
 参考 [Material 的时长说明](https://m1.material.io/motion/duration-easing.html)：普通界面切换通常是数百毫秒，应按距离与复杂度调整，不能套作整段教学演示的时长。[OrbitControls](https://threejs.org/docs/pages/OrbitControls.html)也明确区分旋转速度与按 deltaTime 更新的帧率独立行为。
 
 新增 check-cvd-motion.cjs：执行真实事件处理器，检查可见前表面四方向投影、按钮一致性、120/60/10/4fps 时长、后台时间排除、暂停。用户此前反馈也提示：检查角度数值增减不够，须检查屏幕上前表面的运动方向。
+
+## 机械建模与渲染改版（2026-10-31）
+
+### 参考中真正可迁移的方法
+
+检查 `thebuggeddev/anatomy` 的 `app/lib/three/loaders.ts`、`viewer.ts` 和 `anatomy-data.ts` 后，确认该项目加载 GLB 文件，由 Three.js 显示，使用独立的材质、灯光、观察控制与动画逻辑。代码不能证明这些模型最初由 AI 从零生成。项目中的模型资源不直接复制，本次独立实现设备几何与显示。
+
+- 模型、观察状态、材质和交互分开；不要把“教学简化”当成粗糙制作的理由。
+- 用曲面法线、适度粗糙度和柔和灯光建立体积感，避免靠增加饱和颜色分层。
+- 按装配关系组织运动；剖开只是一种观察手段，机械零件沿合理方向分离。
+- 不变的画面停止重复绘制；旋转时复用几何，减少像素密度；不开昂贵的透射、实时阴影和后处理。
+- 有 GLB 加载器不等于有合适的 CVD 资产；规则炉管结构可用程序建模，避免依赖来源不明的模型。
+
+### 本次实际变化
+
+保留同一套状态与跟手手势、6 秒拆解、合拢、视角复位和部件说明。新增分层端面、法兰螺栓、支座、倒角底座、炉壳连接带与晶舟端部承托；保持晶圆组间距。石英用不透明浅色教学剖开，避免多层透明排序造成理解混乱。
+
+新增 Three.js 0.160.1 增强显示：标准材质、半球光与方向光、色调映射、最大 1.5 倍像素密度。按需异步加载，不阻塞基础画面；CDN 不可用或没有 WebGL 时保留兼容路径。兼容路径也增加平滑顶点明暗与逐像素颜色插值，不以“换引擎”代替基本质量提升。三维几何从同一 `model()` 派生，不维护两套不同结构。当前 GPU 增强路径尚未在可用 GPU 浏览器实测，因此不宣称增强效果已经验收。
+
+本次验证：35 组姿态下有限坐标、晶圆间距和拆解先后通过；交叉三角形深度测试通过；4/10/60/120 fps 的 6 秒计时、暂停、隐藏时间排除和四方向跟手回归通过。浏览器兼容路径实际观察了初始、完全展开、合拢和旋转，检查 360px 容器。不是完整 CAD 碰撞检测；Android 真机多指、硬件渲染和嵌入宿主的 CDN 加载仍待测。
+
+来源：
+- https://github.com/thebuggeddev/anatomy/blob/main/app/lib/three/loaders.ts
+- https://github.com/thebuggeddev/anatomy/blob/main/app/lib/three/viewer.ts
+- https://threejs.org/docs/pages/MeshStandardMaterial.html
+- https://ncf.uic.edu/ptl-lpcvd-system/
+- https://public.websites.umich.edu/~elements/6e/15chap/prof-cvd.html

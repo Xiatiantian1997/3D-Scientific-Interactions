@@ -2,8 +2,8 @@
   "version": "3.0",
   "goal": "在三维中辨认炉壳、石英管、晶舟、端盖及接口，区分观察拆解与真实工艺。",
   "model": {
-    "assumptions": "比例与片数简化；上下分离是教学剖开；不透明网格采用逐像素深度检测，不代表完整碰撞审计。",
-    "evidence": "MKS LPCVD Systems handbook；University of Michigan LNF LPCVD equipment documentation。"
+    "assumptions": "比例与片数简化；上下分离是教学剖开；不透明网格采用逐像素深度检测，不代表完整碰撞审计。 新增倒角底座、法兰螺栓、支座和分层端面为装配教学示意，不对应指定设备尺寸；石英采用不透明浅色剖开显示。",
+    "evidence": "MKS LPCVD Systems handbook；University of Michigan LNF LPCVD equipment documentation。 渲染参考 thebuggeddev/anatomy 的公开 viewer.ts/loaders.ts（独立实现）；Three.js MeshStandardMaterial 官方文档。"
   },
   "states": [
     {
@@ -100,27 +100,27 @@
     {
       "area": "model",
       "status": "tested",
-      "evidence": "35 组姿态投影、晶圆组间距、分离先后通过；不是全碰撞审计"
+      "evidence": "35姿态、晶圆组间距、拆解先后与深度交叉测试通过；新增零件为教学示意，非CAD碰撞审计。"
     },
     {
       "area": "semantics",
       "status": "reviewed",
-      "evidence": "实体颜色身份保持；拆解明确标为观察而非运行"
+      "evidence": "颜色保持部件身份；石英不透明剖开、拆解非运行均明确说明。"
     },
     {
       "area": "interaction",
       "status": "tested",
-      "evidence": "真实事件处理器测试四方向前表面跟手与按钮一致；120/60/10/4 fps 均 6 秒完成；隐藏时间排除和暂停通过。浏览器播放启动已检查，真机多指仍待测。"
+      "evidence": "4/10/60/120fps计时、暂停、后台时间排除、四方向跟手和按钮回归通过；浏览器展开合拢与旋转操作通过。"
     },
     {
       "area": "layout",
       "status": "tested",
-      "evidence": "浏览器默认与完全展开、320px 容器检查；修正顶部裁切"
+      "evidence": "浏览器完整与展开画面，以及360px容器检查；不是手机真机测试。"
     },
     {
       "area": "host",
       "status": "pending",
-      "evidence": "Canvas 软件深度缓冲已运行；WebGL 硬件路径和 Android 双指仍待测"
+      "evidence": "兼容路径已实际运行；Three.js增强路径已实现但GPU效果、Android多指与嵌入宿主外部库加载待测。"
     }
   ]
 }

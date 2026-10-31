@@ -6,14 +6,14 @@
 <style>
 #cvd-structure-3d{--paper:#f6f3e7;--panel:#fffdf6;--ink:#283f45;--muted:#68787b;--edge:#d8d9ce;--teal:#477d84;--gold:#af9060;color:var(--ink);background:var(--paper);border-radius:22px;padding:clamp(16px,3vw,28px);font:16px/1.65 system-ui,sans-serif;max-width:960px;margin:auto;box-sizing:border-box}#cvd-structure-3d *{box-sizing:border-box}#cvd-structure-3d h2{font-size:clamp(22px,4vw,30px);font-weight:600;line-height:1.3;margin:4px 0 8px}#cvd-structure-3d .eyebrow{font-size:12px;letter-spacing:.12em;color:var(--muted)}#cvd-structure-3d .stage{position:relative;margin:12px -6px 8px;background:radial-gradient(ellipse at center,#fffdf5 0%,#f2efe2 85%);border-radius:18px;overflow:hidden}#cvd-structure-3d canvas{display:block;width:100%;height:440px;touch-action:none}#cvd-structure-3d .pose{position:absolute;left:14px;top:10px;font-size:13px;color:var(--muted);pointer-events:none}#cvd-structure-3d .bottom{position:absolute;bottom:10px;left:14px;right:14px;font-size:12px;display:flex;justify-content:space-between;gap:8px;color:var(--muted);pointer-events:none}#cvd-structure-3d button{font:inherit;font-size:14px;min-height:44px;padding:9px 14px;border:1px solid var(--edge);border-radius:12px;background:var(--panel);color:var(--ink);touch-action:manipulation}#cvd-structure-3d button[aria-pressed=true]{background:var(--teal);color:#fff;border-color:var(--teal)}#cvd-structure-3d button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#cvd-structure-3d .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}#cvd-structure-3d .bar{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:14px 0 0}#cvd-structure-3d label{font-size:14px}#cvd-structure-3d input{display:block;width:100%;min-height:44px;accent-color:var(--teal);margin:0}#cvd-structure-3d .parts{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}#cvd-structure-3d .parts button{flex:1 0 auto}#cvd-structure-3d .info{padding:16px 0 0;min-height:116px}#cvd-structure-3d .info strong{font-size:18px;font-weight:600}#cvd-structure-3d .info p{font-size:15px;margin:7px 0;color:var(--muted)}#cvd-structure-3d .note{font-size:12px;color:var(--muted);margin-top:12px;border-top:1px solid var(--edge);padding-top:12px}@media(max-width:480px){#cvd-structure-3d canvas{height:360px}#cvd-structure-3d .info{min-height:160px}}
 </style>
-<div class="eyebrow">CVD / 设备解剖</div>
-<h2>把炉管打开，沿结构看原理</h2>
+<div class="eyebrow">CVD / 机械装配</div>
+<h2>拆开一座炉子，看清每层结构</h2>
 <div class="stage"><div class="pose">水平热壁 LPCVD · 教学模型</div><canvas role="img" aria-label="可旋转的三维炉管模型。依次抬起外层炉壳与保温层、上半石英管，移开端盖并抽出晶舟。"></canvas><div class="bottom"><span>图内旋转、缩放 · 图外翻页</span><span class="view-label">内部观察</span></div></div>
 <div class="controls"><button class="tour">播放拆解</button><button class="assemble">合拢</button><button class="reset">复位视角</button><button class="rotate" aria-label="向左转动物体">左转</button><button class="rotate-right" aria-label="向右转动物体">右转</button><button class="zoom-in" aria-label="放大结构">＋</button><button class="zoom-out" aria-label="缩小结构">−</button></div>
 <div class="bar"><label for="cvd-explode">逐层展开</label><span class="step-label">炉壳已抬起</span></div><input id="cvd-explode" type="range" min="0" max="1000" value="520">
 <div class="parts" aria-label="选择结构"><button data-part="shell">炉壳与加热</button><button data-part="tube">石英反应管</button><button data-part="boat" aria-pressed="true">晶舟与晶圆</button><button data-part="gas">进气端</button><button data-part="outlet">抽气端</button></div>
 <div class="info" aria-live="polite"><strong>晶舟与晶圆</strong><p>一批晶圆竖着排在晶舟上。间隔让气体进入各片之间；晶舟负责支撑，不负责产生等离子体。</p></div>
-<div class="note">剖开与展开是观察手段，不是实际开炉顺序。比例、片数、法兰与附件经过简化；未画全部气柜、联锁、真空泵及尾气处理。颜色区分部件，不表示温度。无需下载，也不依赖外部三维库。</div>
+<div class="note">剖开与展开是观察手段，不是实际开炉顺序。比例、片数、法兰与附件经过简化；未画全部气柜、联锁、真空泵及尾气处理。颜色区分部件，不表示温度。浅色管壁是便于观察的不透明示意，不代表石英的真实透光外观。</div>
 <script>
 (()=>{
 const root=document.getElementById('cvd-structure-3d'),q=s=>root.querySelector(s),canvas=q('canvas'),gl=canvas.getContext('webgl',{alpha:true,antialias:true}),ctx=gl?null:canvas.getContext('2d');
@@ -24,25 +24,31 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const info={shell:['炉壳、保温层与加热区','从外到内是支撑外壳、保温材料和电阻加热区。它们包围石英管，把热量传入管内；本模型分三段表示加热区，不表示具体厂商配置。'],tube:['石英反应管','气体在这根管内接触晶圆。这里把管子沿轴向剖成上下两半，方便看内部；实际石英管通常不是这样打开的。热壁上也可能沉积，清洁状态会影响颗粒风险。'],boat:['晶舟与晶圆','一批晶圆竖着排在晶舟上。间隔让气体进入各片之间；晶舟负责支撑，不负责产生等离子体。蓝灰色圆片是晶圆，并非气流挡板。'],gas:['进气端与密封端盖','反应气经进气接口进入管内；上游的流量控制器决定进气量。端盖与密封接口把腔体同外部环境隔开。展开时接口被分离，仅表示装配关系。'],outlet:['抽气端与压力测量口','尾端连接下游节流阀和真空泵；上方细支管表示压力测量口。持续进气与持续抽气可以同时存在，低压不等于管内没有气体。']};
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));const phase=(p,a,b)=>clamp((p-a)/(b-a));
 function offsets(p){return{hood:phase(p,0,.32)*3.2,tube:phase(p,.32,.58)*1.45,door:phase(p,.58,.77)*5.6,boat:phase(p,.77,1)*2.4}}
-let faces=[];function face(v,col,group){faces.push({v,col,group})}
+let faces=[];function face(v,col,group,normals){faces.push({v,col,group,normals})}
 function box(x,y,z,w,d,h,col,group){let v=[[x,y,z],[x+w,y,z],[x+w,y+d,z],[x,y+d,z],[x,y,z+h],[x+w,y,z+h],[x+w,y+d,z+h],[x,y+d,z+h]];for(let inds of [[0,3,2,1],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]])face(inds.map(i=>v[i]),col,group)}
-function cylX(x0,x1,y,z,r,col,group,N=28){for(let i=0;i<N;i++){let a=i/N*2*Math.PI,b=(i+1)/N*2*Math.PI;let v=[[x0,y+r*Math.cos(a),z+r*Math.sin(a)],[x1,y+r*Math.cos(a),z+r*Math.sin(a)],[x1,y+r*Math.cos(b),z+r*Math.sin(b)],[x0,y+r*Math.cos(b),z+r*Math.sin(b)]];face(v,col,group);face([[x0,y,z],v[0],v[3]],col,group);face([[x1,y,z],v[2],v[1]],col,group)}}
-function shell(x0,x1,y,z,ri,ro,a0,a1,col,group,N=24){for(let i=0;i<N;i++){let a=a0+(a1-a0)*i/N,b=a0+(a1-a0)*(i+1)/N;let at=(x,r,t)=>[x,y+r*Math.cos(t),z+r*Math.sin(t)];face([at(x0,ro,a),at(x1,ro,a),at(x1,ro,b),at(x0,ro,b)],col,group);face([at(x0,ri,b),at(x1,ri,b),at(x1,ri,a),at(x0,ri,a)],col,group);face([at(x0,ri,a),at(x0,ro,a),at(x0,ro,b),at(x0,ri,b)],col,group);face([at(x1,ri,b),at(x1,ro,b),at(x1,ro,a),at(x1,ri,a)],col,group)}for(let a of [a0,a1])face([[x0,y+ri*Math.cos(a),z+ri*Math.sin(a)],[x1,y+ri*Math.cos(a),z+ri*Math.sin(a)],[x1,y+ro*Math.cos(a),z+ro*Math.sin(a)],[x0,y+ro*Math.cos(a),z+ro*Math.sin(a)]],col,group)}
+function cylX(x0,x1,y,z,r,col,group,N=28){for(let i=0;i<N;i++){let a=i/N*2*Math.PI,b=(i+1)/N*2*Math.PI;let v=[[x0,y+r*Math.cos(a),z+r*Math.sin(a)],[x1,y+r*Math.cos(a),z+r*Math.sin(a)],[x1,y+r*Math.cos(b),z+r*Math.sin(b)],[x0,y+r*Math.cos(b),z+r*Math.sin(b)]];face(v,col,group,[[0,Math.cos(a),Math.sin(a)],[0,Math.cos(a),Math.sin(a)],[0,Math.cos(b),Math.sin(b)],[0,Math.cos(b),Math.sin(b)]]);face([[x0,y,z],v[0],v[3]],col,group);face([[x1,y,z],v[2],v[1]],col,group)}}
+function shell(x0,x1,y,z,ri,ro,a0,a1,col,group,N=24){for(let i=0;i<N;i++){let a=a0+(a1-a0)*i/N,b=a0+(a1-a0)*(i+1)/N;let at=(x,r,t)=>[x,y+r*Math.cos(t),z+r*Math.sin(t)];face([at(x0,ro,a),at(x1,ro,a),at(x1,ro,b),at(x0,ro,b)],col,group,[[0,Math.cos(a),Math.sin(a)],[0,Math.cos(a),Math.sin(a)],[0,Math.cos(b),Math.sin(b)],[0,Math.cos(b),Math.sin(b)]]);face([at(x0,ri,b),at(x1,ri,b),at(x1,ri,a),at(x0,ri,a)],col,group,[[0,-Math.cos(b),-Math.sin(b)],[0,-Math.cos(b),-Math.sin(b)],[0,-Math.cos(a),-Math.sin(a)],[0,-Math.cos(a),-Math.sin(a)]]);face([at(x0,ri,a),at(x0,ro,a),at(x0,ro,b),at(x0,ri,b)],col,group);face([at(x1,ri,b),at(x1,ro,b),at(x1,ro,a),at(x1,ri,a)],col,group)}for(let a of [a0,a1])face([[x0,y+ri*Math.cos(a),z+ri*Math.sin(a)],[x1,y+ri*Math.cos(a),z+ri*Math.sin(a)],[x1,y+ro*Math.cos(a),z+ro*Math.sin(a)],[x0,y+ro*Math.cos(a),z+ro*Math.sin(a)]],col,group)}
 function rod(a,b,r,col,group,N=10){let v=b.map((x,i)=>x-a[i]),len=Math.hypot(...v);v=v.map(x=>x/len);let u=Math.abs(v[2])<.9?[-v[1],v[0],0]:[0,-v[2],v[1]],ul=Math.hypot(...u);u=u.map(x=>x/ul);let t=[v[1]*u[2]-v[2]*u[1],v[2]*u[0]-v[0]*u[2],v[0]*u[1]-v[1]*u[0]];for(let i=0;i<N;i++){let p=i/N*2*Math.PI,qq=(i+1)/N*2*Math.PI,f=(o,j)=>o.map((x,k)=>x+r*(u[k]*Math.cos(j)+t[k]*Math.sin(j)));face([f(a,p),f(b,p),f(b,qq),f(a,qq)],col,group);face([a,f(a,qq),f(a,p)],col,group);face([b,f(b,p),f(b,qq)],col,group)}}
+function bevelBox(x,y,z,w,d,h,r,col,group){
+const ring=(zz,inset)=>[[x+r,y+inset,zz],[x+w-r,y+inset,zz],[x+w-inset,y+r,zz],[x+w-inset,y+d-r,zz],[x+w-r,y+d-inset,zz],[x+r,y+d-inset,zz],[x+inset,y+d-r,zz],[x+inset,y+r,zz]];
+const low=ring(z,0),mid=ring(z+h-r,0),top=ring(z+h,r*.45);
+face([...low].reverse(),col,group);face(top,col,group);
+for(let i=0;i<8;i++){let j=(i+1)%8;face([low[i],low[j],mid[j],mid[i]],col,group);face([mid[i],mid[j],top[j],top[i]],col,group)}
+}
 function model(){faces=[];let o=offsets(progress),Z=2.1;
-box(-5,-1.9,-.25,10,3.8,.35,C.base,'base');for(let x of [-4.55,4.15])for(let y of [-1.65,1.25])box(x,y,-.65,.4,.4,.4,C.foot,'base');
-for(let x of [-3.15,2.8])box(x,-.45,.1,.4,.9,.2,C.metal,'base');
-for(let n=0;n<3;n++){let a=-3.8+n*2.54,b=a+2.47;for(let upper of [false,true]){let z=Z+(upper?o.hood:0),lo=upper?0:Math.PI,hi=upper?Math.PI:2*Math.PI;shell(a,b,0,z,1.47,1.8,lo,hi,C.shell,'shell');shell(a+.06,b-.06,0,z,1.34,1.47,lo,hi,C.inner,'shell');for(let j=0;j<3;j++){let xx=a+.35+j*.8;shell(xx,xx+.055,0,z,1.31,1.34,lo,hi,C.coil,'shell',20)}}}
-for(let upper of [false,true])shell(-4.16,4.16,0,Z+(upper?o.tube:0),1.18,1.24,upper?0:Math.PI,upper?Math.PI:2*Math.PI,C.quartz,'tube',28);
-for(let end of [-1,1]){let x=end*4.28-(end<0?o.door:0),group=end<0?'gas':'outlet';shell(x-.12,x+.12,0,Z,.18,1.36,0,Math.PI*2,C.metal,group,32);
+bevelBox(-5,-1.9,-.25,10,3.8,.35,.14,C.base,'base');for(let x of [-4.55,4.15])for(let y of [-1.65,1.25])box(x,y,-.65,.4,.4,.4,C.foot,'base');
+for(let x of [-3.15,2.8]){bevelBox(x-.12,-1.45,.1,.64,2.9,.22,.08,C.edge,'base');for(let y of [-1.22,1.02])box(x,y,.32,.4,.2,.5,C.metal,'base');}
+for(let n=0;n<3;n++){let a=-3.8+n*2.54,b=a+2.47;for(let upper of [false,true]){let z=Z+(upper?o.hood:0),lo=upper?0:Math.PI,hi=upper?Math.PI:2*Math.PI;shell(a,b,0,z,1.68,1.8,lo,hi,C.shell,'shell',40);shell(a+.03,b-.03,0,z,1.47,1.68,lo,hi,C.inner,'shell',40);for(let xx of [a+.08,b-.14])shell(xx,xx+.055,0,z,1.8,1.825,lo,hi,C.edge,'shell',40);shell(a+.06,b-.06,0,z,1.34,1.47,lo,hi,C.inner,'shell');for(let j=0;j<6;j++){let xx=a+.22+j*.39;shell(xx,xx+.055,0,z,1.31,1.34,lo,hi,C.coil,'shell',20)}}}
+for(let upper of [false,true])shell(-4.16,4.16,0,Z+(upper?o.tube:0),1.18,1.24,upper?0:Math.PI,upper?Math.PI:2*Math.PI,C.quartz,'tube',48);
+for(let end of [-1,1]){let x=end*4.28-(end<0?o.door:0),group=end<0?'gas':'outlet';shell(x-.12,x+.12,0,Z,.18,1.36,0,Math.PI*2,C.metal,group,48);shell(x-.16,x-.12,0,Z,1.12,1.27,0,Math.PI*2,C.dark,group,48);for(let k=0;k<8;k++){let t=(k+.5)*Math.PI/4;cylX(x-.2,x+.2,1.27*Math.cos(t),Z+1.27*Math.sin(t),.065,C.edge,group,6)}
 let outer=x+end*.12;shell(outer,outer+end*.65,0,Z,.12,.18,0,Math.PI*2,C.metal,group,16);shell(outer+end*.65,outer+end*.8,0,Z,.12,.29,0,Math.PI*2,C.edge,group,16);
 if(end===1){rod([4.72,0,Z+.18],[4.72,0,Z+1.45],.09,C.metal,'outlet');box(4.47,-.25,Z+1.45,.5,.5,.45,C.dark,'outlet')}
 }
 let shift=-o.boat;
 // Rails below the wafer rim; only the seven small saddles meet the circular edge.
 for(let y of [-.5,.5])box(-2.8+shift,y-.07,Z-.96,5.6,.14,.14,C.boat,'boat');
-for(let x of [-2.8,2.65])box(x+shift,-.57,Z-.96,.15,1.14,.14,C.boat,'boat');
-for(let i=0;i<7;i++){let x=-2.4+i*.8+shift;cylX(x-.025,x+.025,0,Z,.9,C.wafer,'boat',32);
+for(let x of [-2.8,2.65]){box(x+shift,-.57,Z-.96,.15,1.14,.14,C.boat,'boat');shell(x+shift,x+.1+shift,0,Z,.94,1.01,Math.PI,2*Math.PI,C.boat,'boat',24);}
+for(let i=0;i<7;i++){let x=-2.4+i*.8+shift;cylX(x-.025,x+.025,0,Z,.9,C.wafer,'boat',48);
 for(let y of [-.5,.5])box(x-.025,y-.025,Z-.82,.05,.05,.06,C.boat,'boat')}
 
 return faces}
@@ -58,15 +64,54 @@ function rasterDepth(data,w,h){const img=ctx.createImageData(w,h),pixels=img.dat
 for(let k=0;k<data.length;k+=18){const vs=[0,6,12].map(o=>[(data[k+o]+1)*w/2,(1-data[k+o+1])*h/2,data[k+o+2]]),[a,b,c]=vs;
 const area=(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);if(Math.abs(area)<.001)continue;
 const x0=Math.max(0,Math.floor(Math.min(a[0],b[0],c[0]))),x1=Math.min(w-1,Math.ceil(Math.max(a[0],b[0],c[0]))),y0=Math.max(0,Math.floor(Math.min(a[1],b[1],c[1]))),y1=Math.min(h-1,Math.ceil(Math.max(a[1],b[1],c[1])));
-const rgb=[data[k+3],data[k+4],data[k+5]].map(v=>Math.round(v*255));
-for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const px=x+.5,py=y+.5,u=((b[0]-px)*(c[1]-py)-(b[1]-py)*(c[0]-px))/area,v=((c[0]-px)*(a[1]-py)-(c[1]-py)*(a[0]-px))/area,t=1-u-v;if(u<-.00001||v<-.00001||t<-.00001)continue;const z=u*a[2]+v*b[2]+t*c[2],idx=y*w+x;if(z<depth[idx]){depth[idx]=z;pixels[idx*4]=rgb[0];pixels[idx*4+1]=rgb[1];pixels[idx*4+2]=rgb[2];pixels[idx*4+3]=255;}}
+const rgb=[3,9,15].map(o=>[data[k+o]*255,data[k+o+1]*255,data[k+o+2]*255]);
+for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const px=x+.5,py=y+.5,u=((b[0]-px)*(c[1]-py)-(b[1]-py)*(c[0]-px))/area,v=((c[0]-px)*(a[1]-py)-(c[1]-py)*(a[0]-px))/area,t=1-u-v;if(u<-.00001||v<-.00001||t<-.00001)continue;const z=u*a[2]+v*b[2]+t*c[2],idx=y*w+x;if(z<depth[idx]){depth[idx]=z;for(let channel=0;channel<3;channel++)pixels[idx*4+channel]=u*rgb[0][channel]+v*rgb[1][channel]+t*rgb[2][channel];pixels[idx*4+3]=255;}}
 }ctx.putImageData(img,0,0)}
+let engine=null;
+function initEngine(){if(gl && typeof THREE!=='undefined'){
+try{
+const renderer=new THREE.WebGLRenderer({canvas,context:gl,alpha:true,antialias:true});
+renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(),assembly=new THREE.Group();scene.add(assembly);
+scene.add(new THREE.HemisphereLight(0xfff6e7,0x707b7c,2.3));
+for(const [color,intensity,xyz] of [[0xfff2dd,3.3,[-4,-6,10]],[0xe0edf1,1.6,[4,6,7]],[0xffffff,1.1,[-8,2,4]]]){let light=new THREE.DirectionalLight(color,intensity);light.position.set(...xyz);scene.add(light)}
+engine={renderer,scene,camera,assembly,pose:null};
+}catch(error){console.warn('Three renderer unavailable; basic renderer retained',error)}
+}}
+initEngine();
+if(gl && !engine){const library=document.createElement('script');library.src='https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js';library.onload=()=>{initEngine();dirty=true};library.onerror=()=>console.warn('Three.js unavailable; basic renderer retained');document.head.appendChild(library);}
+function renderThree(w,h){
+const {renderer,scene,camera,assembly}=engine;
+if(engine.pose!==progress){
+for(const child of [...assembly.children]){child.geometry.dispose();child.material.dispose();assembly.remove(child)}
+const batches=new Map();for(const f of model()){
+const key=f.group+':'+f.col.join(',');let batch=batches.get(key);if(!batch){batch={f,positions:[],normals:[]};batches.set(key,batch)}
+const a=new THREE.Vector3(...f.v[1]).sub(new THREE.Vector3(...f.v[0])),b=new THREE.Vector3(...f.v[2]).sub(new THREE.Vector3(...f.v[0])),normal=a.cross(b).normalize().toArray();
+for(let i=1;i<f.v.length-1;i++)for(const j of [0,i,i+1]){batch.positions.push(...f.v[j]);batch.normals.push(...(f.normals?f.normals[j]:normal))}
+}
+for(const {f,positions,normals} of batches.values()){
+const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));
+const metal=[C.metal,C.edge,C.coil,C.foot].includes(f.col),wafer=f.col===C.wafer;
+const mat=new THREE.MeshStandardMaterial({color:new THREE.Color('rgb('+f.col.join(',')+')'),roughness:wafer?.31:metal?.4:.68,metalness:wafer?.25:metal?.35:.04,side:THREE.DoubleSide});
+assembly.add(new THREE.Mesh(geo,mat));
+}engine.pose=progress;
+}
+const scale=Math.min(w/15.6,h/11.8)*zoom,halfW=w/(2*scale),halfH=h/(2*scale);
+camera.left=-halfW;camera.right=halfW;camera.top=halfH;camera.bottom=-halfH;camera.near=.1;camera.far=100;
+const target=new THREE.Vector3(-offsets(progress).door*.42,0,2.25);
+// Place the object's origin at 55% of screen height, matching the fallback.
+target.add(new THREE.Vector3(-Math.sin(az)*Math.sin(el),-Math.cos(az)*Math.sin(el),Math.cos(el)).multiplyScalar(.05*h/scale));
+camera.up.set(0,0,1);camera.position.copy(target).add(new THREE.Vector3(Math.sin(az)*Math.cos(el),Math.cos(az)*Math.cos(el),Math.sin(el)).multiplyScalar(30));camera.lookAt(target);camera.updateProjectionMatrix();
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(w,h,false);renderer.render(scene,camera);
+}
+function updateLabels(){q('.step-label').textContent=progress<.03?'完整装配':progress<.32?'抬起炉壳与加热层':progress<.58?'揭开上半石英管':progress<.77?'分离密封端盖':'抽出晶舟';q('.view-label').textContent=progress<.03?'完整结构':'教学拆解 · 非运行状态';dirty=false;}
 function render(){let w=canvas.clientWidth;canvas.style.height=Math.max(340,Math.min(520,w*.7))+'px';let h=canvas.clientHeight,d=gl?Math.min(devicePixelRatio||1,2):1;if(canvas.width!==Math.round(w*d)||canvas.height!==Math.round(h*d)){canvas.width=Math.round(w*d);canvas.height=Math.round(h*d)}
+if(engine){renderThree(w,h);updateLabels();return;}
 const mesh=model(),data=[];
 for(let f of mesh){let a=f.v[1].map((v,i)=>v-f.v[0][i]),b=f.v[2].map((v,i)=>v-f.v[0][i]);let n=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],len=Math.hypot(...n)||1;
-let shade=.74+.26*Math.abs((n[0]*-.3+n[1]*-.4+n[2]*.86)/len);let col=f.col;if(selected&&f.group!==selected&&f.group!=='base')col=col.map((v,i)=>v*.85+[235,234,220][i]*.15);col=col.map(c=>c*shade/255);
+let shade=.58+.42*Math.abs((n[0]*-.35+n[1]*-.45+n[2]*.82)/len);let col=f.col;if(selected&&f.group!==selected&&f.group!=='base')col=col.map((v,i)=>v*.85+[235,234,220][i]*.15);col=col.map(c=>c*shade/255);
 const ps=f.v.map(v=>{const p=project(v,w,h);return[p[0]/w*2-1,1-p[1]/h*2,-p[2]/30]});
-for(let i=1;i<ps.length-1;i++)for(let v of [ps[0],ps[i],ps[i+1]])data.push(...v,...col);
+for(let i=1;i<ps.length-1;i++)for(let j of [0,i,i+1]){let tint=col;if(f.normals){let nn=f.normals[j],smooth=.58+.42*Math.abs(nn[0]*-.35+nn[1]*-.45+nn[2]*.82);tint=col.map(c=>c*smooth/shade)}data.push(...ps[j],...tint);}
 }
 if(gl){gl.viewport(0,0,canvas.width,canvas.height);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(positionLocation);gl.vertexAttribPointer(positionLocation,3,gl.FLOAT,false,24,0);gl.enableVertexAttribArray(colorLocation);gl.vertexAttribPointer(colorLocation,3,gl.FLOAT,false,24,12);gl.drawArrays(gl.TRIANGLES,0,data.length/6);}else rasterDepth(data,canvas.width,canvas.height);
 q('.step-label').textContent=progress<.03?'完整装配':progress<.32?'抬起炉壳与加热层':progress<.58?'揭开上半石英管':progress<.77?'分离密封端盖':'抽出晶舟';q('.view-label').textContent=progress<.03?'完整结构':'教学拆解 · 非运行状态';dirty=false;
