@@ -1,0 +1,188 @@
+{
+  "version": "3.0",
+  "goal": "无需逐步点击即可看见供料、成膜、排气和成核的连续变化；播放仅在可见画面推进，可暂停拖动。",
+  "model": {
+    "assumptions": "SiH4净反应Si+2H2；微观Si表面过程仅教学归并不作基元路径；成核为SiO2上硅岛的形貌示意；覆盖为定常一阶有效输运反应模型，薄膜尚未显著改变几何，不预测封口。 宏观动画为固定四份供料的过程故事，停留长短为示意，不对应速率或原子轨迹；每轮末尾明确回放重置。",
+    "evidence": "IBM Surface reactions in Si chemical vapor deposition from silane (1990); Kajikawa 2004 DOI10.1002/cvde.200304165; Step Coverage Prediction in LPCVD 1989; IUPAC adsorption definitions."
+  },
+  "states": [
+    {
+      "id": "reference",
+      "meaning": "同一沟槽、同一顶部厚度的均匀覆盖参考"
+    },
+    {
+      "id": "actual",
+      "meaning": "简化反应输运模型的厚度分布"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "lesson",
+      "channel": "fill",
+      "token": "blue",
+      "role": "identity",
+      "meaning": "硅元素或含硅固体轮廓；粒子只在微观表示原子"
+    },
+    {
+      "scope": "lesson",
+      "channel": "fill",
+      "token": "gold",
+      "role": "identity",
+      "meaning": "氢元素"
+    },
+    {
+      "scope": "lesson",
+      "channel": "fill",
+      "token": "substrate",
+      "role": "identity",
+      "meaning": "不展开原子的SiO2基底连续体"
+    },
+    {
+      "scope": "lesson",
+      "channel": "line",
+      "token": "dashed",
+      "role": "observer",
+      "meaning": "均匀参考轮廓或明确标注的非成键相互作用"
+    },
+    {
+      "scope": "lesson",
+      "channel": "boxed_label",
+      "token": "material_packet",
+      "role": "observer",
+      "meaning": "宏观物料份额去向示意，不是单分子轨迹"
+    }
+  ],
+  "actions": [
+    {
+      "id": "compare",
+      "kind": "compare",
+      "changes": [
+        "reference_visible"
+      ],
+      "fixed": [
+        "geometry",
+        "top_thickness",
+        "model"
+      ],
+      "feedback": "原位置显示均匀覆盖虚线轮廓"
+    },
+    {
+      "id": "aspect",
+      "kind": "model",
+      "changes": [
+        "depth",
+        "aspect_ratio",
+        "concentration",
+        "coverage"
+      ],
+      "fixed": [
+        "width",
+        "consumption_transport_ratio",
+        "top_thickness"
+      ],
+      "feedback": "几何与三处覆盖同步"
+    },
+    {
+      "id": "reaction",
+      "kind": "construct",
+      "changes": [
+        "positions",
+        "bonds",
+        "stage"
+      ],
+      "fixed": [
+        "Si_count",
+        "H_count",
+        "identity"
+      ],
+      "feedback": "五原子全程可追踪；步骤文字同步"
+    },
+    {
+      "id": "nucleation",
+      "kind": "construct",
+      "changes": [
+        "island_size",
+        "connectivity"
+      ],
+      "fixed": [
+        "nucleus_positions",
+        "view"
+      ],
+      "feedback": "显示形貌构造，不把拖动当真实时间"
+    },
+    {
+      "id": "macro",
+      "kind": "construct",
+      "changes": [
+        "illustrative_wait_time",
+        "story_progress"
+      ],
+      "fixed": [
+        "feed_count",
+        "identity"
+      ],
+      "feedback": "四份供料送入后出现固体硅与氢气排出，不再输出宏观浓度计算"
+    },
+    {
+      "id": "autoplay",
+      "kind": "construct",
+      "changes": [
+        "story_progress",
+        "illustrative_positions",
+        "bonds",
+        "growth"
+      ],
+      "fixed": [
+        "element_identity",
+        "reaction_atom_count",
+        "scenario"
+      ],
+      "feedback": "可见区域自动播放，明确暂停/重播和示意步骤，隐藏时停下"
+    }
+  ],
+  "comparison": {
+    "required": true,
+    "baseline": "reference",
+    "target": "actual",
+    "action": "compare",
+    "fixed": [
+      "geometry",
+      "top_thickness"
+    ],
+    "placement": "覆盖图上方"
+  },
+  "preserved": [
+    {
+      "feature": "颜色含义稳定、同位置对照、跟手进度、连续对象身份",
+      "status": "retained",
+      "evidence": "用于新CVD讲义"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "tested",
+      "evidence": "1203原子状态检查Si/H收支与身份；8个宏观份额完整流程，不输出伪浓度；覆盖模型不变。"
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "主线断Si-H键并形成表面Si-Si键；宏观份额与微观原子分别注明，物理吸附为可选对照。"
+    },
+    {
+      "area": "interaction",
+      "status": "tested",
+      "evidence": "可见时自动播放：浏览器确认微观/成核进度自动增加；暂停后停止；切换宏观情形重启。重播恢复播放经源码复查。"
+    },
+    {
+      "area": "layout",
+      "status": "tested",
+      "evidence": "320px无横向溢出；截图发现宏观状态文字与路径相交，已移到腔体外。其余尺寸沿用上版。"
+    },
+    {
+      "area": "host",
+      "status": "reviewed",
+      "evidence": "沙盒浏览器自动动画正常；可见性/后台暂停已实现；Android真机未测。"
+    }
+  ]
+}

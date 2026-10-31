@@ -1,0 +1,124 @@
+<div id="crystal-layer">
+<style>
+#crystal-layer{--ca-paper:#f5f1e5;--ca-surface:#fffcf3;--ca-ink:#294d57;--ca-muted:#61757a;--ca-blue:#4e8791;--ca-gold:#ab8753;--ca-line:#d8dace;color:var(--ca-ink);background:var(--ca-paper);font:16px/1.7 system-ui,sans-serif;padding:24px 20px;border-radius:22px;max-width:800px;margin:auto}#crystal-layer *{box-sizing:border-box}#crystal-layer h2{font-size:26px;line-height:1.4;margin:0 0 8px}#crystal-layer h3{font-size:20px;margin:22px 0 8px}#crystal-layer p{margin:8px 0 16px}#crystal-layer .ca-muted{color:var(--ca-muted);font-size:14px}#crystal-layer .ca-groups{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:18px 0 10px}#crystal-layer button{font:inherit;color:inherit;border:1px solid var(--ca-line);background:var(--ca-surface);border-radius:12px;padding:9px 12px;min-height:44px;transition:background .18s,color .18s}#crystal-layer button[aria-pressed=true]{background:var(--ca-ink);border-color:var(--ca-ink);color:#fffdf6}#crystal-layer button:disabled{opacity:.45}#crystal-layer .ca-types{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}#crystal-layer .ca-types button{font-size:14px;padding:7px 11px}#crystal-layer .ca-headline{font-weight:650;font-size:21px;margin:15px 0 8px;line-height:1.5}#crystal-layer .ca-stage{background:var(--ca-surface);border-radius:18px;overflow:hidden}#crystal-layer .ca-stagehead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px 12px;padding:14px 16px 0;font-size:14px;color:var(--ca-muted)}#crystal-layer canvas{display:block;width:100%;height:330px;touch-action:none}#crystal-layer .ca-tools{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 10px}#crystal-layer .ca-main{background:var(--ca-blue);color:#fffdf6;border-color:var(--ca-blue)}#crystal-layer .ca-caption{margin:12px 0;color:var(--ca-muted);font-size:14px}#crystal-layer .ca-reading{border-left:3px solid var(--ca-gold);padding-left:13px;margin:18px 0}#crystal-layer .ca-facts{display:grid;grid-template-columns:100px 1fr;gap:9px 14px;margin-top:20px}#crystal-layer .ca-facts dt{color:var(--ca-muted)}#crystal-layer .ca-facts dd{margin:0}#crystal-layer details{border-top:1px solid var(--ca-line);padding-top:10px;margin-top:20px}#crystal-layer summary{min-height:44px;padding:8px 0}#crystal-layer .ca-viewtools{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}#crystal-layer a{color:inherit}#crystal-layer [hidden]{display:none!important}#crystal-layer .ca-sequence{font-variant-numeric:tabular-nums;letter-spacing:3px;font-weight:600}#crystal-layer .ca-hint{font-size:14px;color:var(--ca-muted);margin:8px 0}@media(max-width:480px){#crystal-layer{padding:20px 13px}#crystal-layer h2{font-size:24px}#crystal-layer .ca-groups button{padding:8px 4px}#crystal-layer .ca-headline{font-size:19px}#crystal-layer .ca-facts{grid-template-columns:1fr;gap:3px}#crystal-layer .ca-facts dd{margin-bottom:10px}#crystal-layer canvas{height:300px}}
+</style>
+<h2>晶体缺陷，究竟哪里不一样？</h2>
+<p class="ca-muted">点、线、面、体四类 · 12 个代表。每次只看一种，在同一位置切换基准与缺陷。</p>
+<div class="ca-groups" role="group" aria-label="缺陷大类"><button data-group="point">点缺陷</button><button data-group="line" aria-pressed="true">线缺陷</button><button data-group="plane">面缺陷</button><button data-group="volume">体缺陷</button></div>
+<div class="ca-types" role="group" aria-label="具体缺陷"></div>
+<div class="ca-headline" data-title></div>
+<div class="ca-tools" role="group" aria-label="正常与缺陷对照"><button class="cursor-interaction" data-normal>正常排列</button><button class="cursor-interaction" data-defect>有缺陷</button></div>
+<p class="ca-caption" data-legend></p>
+<div class="ca-stage"><div class="ca-stagehead"><span data-state></span><span data-view></span></div><canvas role="img" aria-label="可旋转的晶体缺陷结构示意"></canvas></div>
+<div class="ca-tools"><button class="cursor-interaction" data-action></button></div>
+<p class="ca-hint">图内单指旋转 · 双指缩放；图外照常滚动</p>
+<div class="ca-reading" data-reading aria-live="polite"></div>
+<div class="ca-sequence" data-sequence hidden></div>
+<dl class="ca-facts"><dt>看哪里</dt><dd data-look></dd><dt>为什么归这类</dt><dd data-why></dd><dt>别误会</dt><dd data-not></dd></dl>
+<details><summary>视角与放大</summary><div class="ca-viewtools"><button data-camera="front">正面</button><button data-camera="tilt">斜看</button><button data-camera="left">向左转</button><button data-camera="right">向右转</button><button data-camera="in">放大</button><button data-camera="out">缩小</button></div></details>
+<details><summary>四类怎么分？这些图简化了什么？</summary><p>看的是缺陷主要怎样延伸：局部位置是点；沿一个方向延伸是线；两侧排列在一个界面相接是面；占据一块空间的是体。原子都有大小，位错核心也有宽度；“点、线、面”是结构分类，不是数学上绝对没有尺寸。</p><p>这里用简化点阵说明排列关系，不是硅的金刚石结构，也不是原子尺度能量计算。连线仅帮助追踪邻近排列，不代表精确化学键。蓝灰球表示宿主组分，暖金球表示另一组分；所有示例中都不拿原子颜色表示“有无缺陷”。细描边仅引导注意，虚线圈提示空位置。</p><p>“完整排列”与缺陷的切换是教学对照，不是生成缺陷的真实动力学过程。深处淡化、深度展开及外层隐藏只改变观察方式。层错、孪晶采用密排层的 A/B/C 三种位置；螺型位错采用晶面螺旋坡道示意，中心核心不作原子级建模。</p><p>四大类均已覆盖，但并非所有命名的穷尽目录：混合位错、位错环、反相界、肖特基缺陷、带电态及复合缺陷等没有独立建模。析出物是否有害取决于材料和用途；“缺陷”不等于一定有害。</p><p class="ca-muted">参考：<a href="https://cmp.df.unipi.it/roddaro/SSPnotes/ch01-bravais.html" target="_blank" rel="noopener">比萨大学·晶体与缺陷</a> · <a href="https://nte.mines-albi.fr/SciMat/en/co/SM3uc3-2.html" target="_blank" rel="noopener">Mines Albi·层错与孪晶</a> · <a href="https://dtrinkle.matse.illinois.edu/MatSE584/overview_main.html" target="_blank" rel="noopener">晶体缺陷图谱</a></p></details>
+<script>
+(()=>{'use strict';const root=document.getElementById('crystal-layer'),$=s=>root.querySelector(s),$$=s=>[...root.querySelectorAll(s)],cv=$('canvas'),ctx=cv.getContext('2d');
+const D={
+vac:{group:'point',name:'空位',title:'本来该有原子的地方，空了一个。',look:'正面中央：周围仍然按原来的位置排列，中心少了一个原子。',why:'缺失集中在一个晶格位置，是点缺陷。',not:'虚线圈只是空位置的提示，不是一个空心原子。',legend:'虚线圈＝缺失的位置；蓝灰球＝原子。',reading:'切换正常／缺陷，观察中央位置有原子与空着的差别。',action:'看深处的排列'},
+inter:{group:'point',name:'间隙原子',title:'正常位置没空，缝隙里却多了一个。',look:'中央四个正常位置之间，多了一个暖金色原子。',why:'新增原子占据非正常晶格位置，扰动局限在附近。',not:'示意图为看清位置缩小了间隙原子；真实原子不会因此自动缩小。周围弹性松弛未计算。',legend:'暖金球＝新增的间隙原子；蓝灰球＝原有原子。',reading:'与完整排列切换：原有位置仍在，多出来的原子位于缝隙。',action:'看深处的排列'},
+sub:{group:'point',name:'替位原子',title:'位置没换，坐在这里的原子换了。',look:'正面中央原子带“X”标识，占据原本的晶格位置。',why:'一种异类原子替代宿主原子，属于点缺陷。',not:'替位不一定有害。半导体的某些有意掺杂就利用替位原子；这里不模拟具体元素与电性。',legend:'带 X 的暖金球＝异类原子；尺寸差仅为辨认。',reading:'切换完整排列，观察同一个位置上的原子身份变化。',action:'看深处的排列'},
+frenkel:{group:'point',name:'空位—间隙对',title:'一个原子离开原位，落进旁边的间隙。',look:'空着的原位置与邻近的间隙原子一起看。',why:'一个空位加一个自间隙原子，构成弗伦克尔对，归入点缺陷组合。',not:'原子总数不变。切换是位置关系的示意，不是实际迁移路径或能垒计算。',legend:'蓝灰球＝宿主原子；虚线圈＝留下的空位。',reading:'切回完整排列时，这个原子回到原位，两个缺陷同时消失。',action:'看深处的排列'},
+anti:{group:'point',name:'反位缺陷',title:'两类原子各有位置，却坐错了座位。',look:'蓝灰、暖金两类原子本应交替；中央两个原子交换后，出现不合原次序的邻居。',why:'化合物晶体中，原子占据了另一组分的晶格位置。这里示意一对反位。',not:'这不是单元素硅的示意。两种颜色只代表不同组分，不对应实际晶型。',legend:'蓝灰与暖金＝两种原子；切换时追踪中央两个原子的换位。',reading:'点图上方“正常排列／有缺陷”，看中央两个原子交换位置。动画只解释前后对应，不是实际迁移路径。',action:'看深处的排列'},
+edge:{group:'line',name:'刃型位错',title:'多出来的一列在这里停止；沿深度看，是一条边。',look:'上部中央多一列，向下没有延续。暖金色只标出这列最下端的原子。',why:'把正面排列沿深度展开，各层的终止处排成一条边；位错核心沿这条边延伸。',not:'不是整张半层都属于面缺陷，也不是某个原子的一半坏了；核心附近的排列也有畸变。',legend:'暖金球＝额外半层末端附近的原子；蓝灰球＝其余原子。',reading:'先看这一层的终止处，再点“沿深度展开”，追踪同样的位置。',action:'沿深度展开'},
+screw:{group:'line',name:'螺型位错',title:'沿同一片晶面绕一圈，竟到了上一层。',look:'这次用一片晶面的点网表示：暖金色节点沿坡道绕行，越走越高。',why:'晶面绕一条轴线形成螺旋连接，核心沿轴线延伸，所以是线缺陷。',not:'不是晶体里塞了一根螺丝。点网是晶面的形状采样，不是原子点阵；中心省略区不代表真实空洞。',legend:'点网＝一片晶面的局部螺旋连接；暖金点＝同一圈路径上的采样位置。',reading:'转动看坡道两端：同一方位相差一层高度。完整排列下这一圈是平的。',action:'侧面看高度'},
+grain:{group:'plane',name:'晶界',title:'两边各自整齐，到了交界却对不上。',look:'左、右两块晶粒内部的原子行朝不同方向，交界处的排列无法直接接续。',why:'不同取向的晶粒沿一片界面相遇，属于面缺陷。',not:'这是取向对照，不是晶界形成动画。两侧晶粒各自整体转向；真实界面原子的重排没有计算。交界处不是插入的膜。',legend:'左右两种柔和色调＝不同取向的晶粒；没有填色界面。',reading:'来回切换：每侧原子和连线作为一整块转向，没有原子消失或新增。再沿深度观察这种取向差。',action:'看深处的排列'},
+stack:{group:'plane',name:'层错',title:'每层还很整齐，叠放顺序却断了一次。',look:'下方字母与图中各层对应：完整时 ABCABCAB；层错时 ABCACABC。',why:'密排层的正常堆垛关系在层间中断，异常沿该层间界面延伸。',not:'A/B/C 是同一种原子层的三种横向位置，不是三种元素。这里不模拟硅双层结构。',legend:'每一横层是一层原子；字母只表示层位置。',reading:'切换完整排列，留意中部以上的层怎样改变横向位置，而非整层消失。',action:'斜看层的延伸'},
+twin:{group:'plane',name:'孪晶界',title:'跨过中间这一层，叠放方向反过来了。',look:'以中间 A 层为界，两侧是镜像次序：A B C A C B A。',why:'两侧晶体有特定镜像关系，分隔它们的界面是孪晶界。',not:'孪晶不是任意转个角度的晶界；这里选密排层镜像示意。',legend:'中间共用的 A 层；其余层的位置体现镜像。',reading:'先看正面两侧层的错开方向，再斜看：镜像关系贯穿整层。',action:'斜看层的延伸'},
+void:{group:'volume',name:'空洞',title:'少的不是一个位置，而是一整块空间。',look:'晶体内部有一团空区；先隐藏前面两层，直接看它的内部轮廓。',why:'缺失区域同时具有长、宽、深，是体缺陷。',not:'外层隐藏只是观察工具，未从晶体上切掉原子。空洞边缘真实松弛未计算。',legend:'暖金球＝空洞壁邻近原子；空白＝内部没有原子的区域。',reading:'点“显示完整外层”会把遮挡恢复；切换完整排列则会真正填回空洞。',action:'显示完整外层'},
+precip:{group:'volume',name:'析出物',title:'晶体里面，多了一小块不同的相。',look:'内部一团 X 原子聚集成小块，周围仍是原来的基体。',why:'第二相颗粒占据三维空间；颗粒本身是体，颗粒与基体的界面是面。',not:'不等于所有杂质都是析出物。这里示意另一相的区域，未模拟相变或真实晶格失配。',legend:'带 X 的暖金球＝第二相颗粒；蓝灰球＝基体。',reading:'先看内部小块，再恢复外层，观察它被包在晶体里面。',action:'显示完整外层'}
+};
+let key='vac',ideal=false,extra=false,yaw=0,pitch=0,zoom=1,reveal=1,animation=0,viewAnimation=0,q=1,targetQ=1;const TAU=Math.PI*2;let scene={atoms:[],links:[],rings:[],labels:[]};
+const groupNames={point:'点缺陷',line:'线缺陷',plane:'面缺陷',volume:'体缺陷'};
+function build(grainProgress=ideal?0:1){let atoms=[],links=[],rings=[],labels=[];const add=(id,x,y,z,opt={})=>{let a={id,x,y,z,r:.22,alpha:1,color:'blue',...opt};atoms.push(a);return a};const link=(a,b)=>{if(key==='frenkel'&&!ideal&&(a.id==='p2-2-0'||b.id==='p2-2-0'))return;links.push([a,b])};
+if(key==='edge'){
+const nz=Math.min(4,Math.max(1,Math.ceil(reveal)));for(let k=0;k<nz;k++){const z=k*.8-(nz-1)*.4,alpha=k===nz-1?Math.max(.06,reveal-(nz-1)):1;const rows=[];for(let j=0;j<6;j++){let row=[],y=2.5-j,upper=j<3,n=ideal?6:(upper?7:6);for(let i=0;i<n;i++){let x=i-(n-1)/2;if(!ideal&&!upper)x+=Math.sign(x)*.16*Math.exp(-Math.abs(y));let a=add(`e${k}-${j}-${!ideal&&upper?(i===3?"extra":i>3?i-1:i):i}`,x,y,z,{alpha,color:'blue',focus:!ideal&&upper&&j===2&&i===3});row.push(a);if(i)link(row[i-1],a);if(j>0&&rows[j-1].length===n)link(rows[j-1][i],a);}if(j>0&&rows[j-1].length!==n){row.forEach((a,i)=>link(rows[j-1][i<3?i:i+1],a))}rows.push(row)} }
+}else if(key==='screw'){
+for(let j=0;j<=48;j++){const t=j/48*TAU;for(let r=0;r<4;r++){const radius=.55+r*.65;let a=add(`s${j}-${r}`,radius*Math.cos(t),ideal?0:(t/TAU-.5)*2,radius*Math.sin(t),{r:0,color:'blue',focus:false,mesh:true});if(r)link(atoms[atoms.length-2],a);if(j)link(atoms[atoms.length-5],a)}}
+}else if(key==='stack'||key==='twin'){
+const seq=key==='stack'?(ideal?'ABCABCAB':'ABCACABC'):(ideal?'ABCABCA':'ABCACBA');const m=seq.length;for(let j=0;j<m;j++){let s='ABC'.indexOf(seq[j]),y=(j-(m-1)/2)*.72;labels.push({id:'layer'+j,x:-3.1+s*.5,y,z:.9+s*.288675,text:seq[j]});for(let k=0;k<3;k++){let row=[];for(let i=0;i<5;i++){let a=add(`h${j}-${k}-${i}`,i-2+(k%2)*.5+s*.5,y,k*.866-.866+s*.288675,{r:.22,color:'blue'});row.push(a);if(i)link(row[i-1],a)}}}
+ }else if(key==='grain'){
+// Stable local coordinates and membership. One rigid transform per grain.
+for(const side of [-1,1]){const angle=side*.14*grainProgress,c=Math.cos(angle),sn=Math.sin(angle);
+for(let k=0;k<(extra?4:1);k++){const map=new Map;for(let j=-2;j<=2;j++)for(let i=0;i<3;i++){
+const lx=side*(i+.5),ly=j,x=lx*c-ly*sn,y=lx*sn+ly*c;
+const a=add(`g${side}-${k}-${i}-${j}`,x,y,k*.8-(extra?1.2:0),{r:.19,color:'blue',grain:side,alpha:1});map.set(i+','+j,a);
+for(const [di,dj]of[[-1,0],[0,-1]]){const b=map.get((i+di)+','+(j+dj));if(b)link(b,a)}
+}}}
+}else{
+const volume=D[key].group==='volume',n=volume?7:5,center=(n-1)/2,map=new Map;const maxZ=volume?6:(extra?3:0);for(let k=0;k<=maxZ;k++)for(let j=0;j<n;j++)for(let i=0;i<n;i++){
+let x=i-center,y=j-center,z=volume?k-3:-k*.9,id=`p${i}-${j}-${k}`,r=.22,color='blue',tag='',focus=false;const focal=i===2&&j===2&&k===0,other=i===3&&j===2&&k===0;let dist=Math.hypot(x,y,z);
+if(volume&&!extra&&k>4)continue;
+if(key==='void'&&!ideal&&dist<1.6)continue;
+if((key==='vac'||key==='frenkel')&&!ideal&&focal){rings.push({x,y,z});if(key==='vac')continue;x=.5;y=.5;focus=true}
+if(key==='sub'&&!ideal&&focal){id='guest';color='gold';r=.26;focus=true}
+if(key==='anti'){let parity=(i+j+k)%2;if(!ideal&&(focal||other))parity=1-parity;color=parity?'gold':'blue';tag='';focus=(focal||other);if(!ideal&&focal)id='p3-2-0';if(!ideal&&other)id='p2-2-0'}
+if(key==='void'&&!ideal&&dist>=1.6&&dist<2.35){focus=false}
+if(key==='precip'){const inCluster=dist<1.65;const dispersed=(i+2*j+3*k)%13===0; if(ideal?dispersed:inCluster){color='gold';r=.22} }
+let a=add(id,x,y,z,{r,color,tag,focus,alpha:volume?1:(k===0?1:.22)});map.set(`p${i}-${j}-${k}`,a);for(let [di,dj,dk]of[[-1,0,0],[0,-1,0],[0,0,-1]]){let b=map.get(`p${i+di}-${j+dj}-${k+dk}`);if(b)link(b,a)}
+}
+if(!ideal&&key==='inter')add('interstitial',.5,.5,0,{r:.22,color:'blue',focus:true});
+}
+if(key==='precip'){
+const sites=[];for(let k=0;k<7;k++)for(let j=0;j<7;j++)for(let i=0;i<7;i++)sites.push({id:`p${i}-${j}-${k}`,inside:Math.hypot(i-3,j-3,k-3)<1.65});
+const clustered=sites.filter(a=>a.inside).map(a=>a.id),count=clustered.length;
+const dispersed=sites.filter((a,i)=>i%11===3).slice(0,count).map(a=>a.id);
+const guest=new Set(ideal?dispersed:clustered);let gi=0,hi=0;const identities=new Map(sites.map(a=>[a.id,{id:guest.has(a.id)?'guest'+gi++:'host'+hi++,color:guest.has(a.id)?'gold':'blue'}]));
+for(const a of atoms)Object.assign(a,identities.get(a.id));
+}
+scene={atoms,links,rings,labels};return scene;}
+function project(a,w,h){let x=a.x*Math.cos(yaw)+a.z*Math.sin(yaw),z=-a.x*Math.sin(yaw)+a.z*Math.cos(yaw),y=a.y*Math.cos(pitch)-z*Math.sin(pitch),depth=a.y*Math.sin(pitch)+z*Math.cos(pitch),scale=Math.min(w/(D[key].group==='point'?6.5:9),h/(D[key].group==='point'?6:7.8))*zoom;return{x:w/2+x*scale,y:h/2-y*scale,z:depth,r:a.r*scale,scale};}
+function draw(){let w=cv.clientWidth,h=cv.clientHeight;if(!w)return;let d=Math.min(devicePixelRatio||1,2);cv.width=Math.round(w*d);cv.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);const projected=new Map(scene.atoms.map(a=>[a.id,project(a,w,h)]));let objects=[];for(const [a,b]of scene.links){let pa=projected.get(a.id),pb=projected.get(b.id);objects.push({z:(pa.z+pb.z)/2-.01,kind:'link',a,b,pa,pb})}for(let a of scene.atoms)objects.push({z:projected.get(a.id).z,kind:'atom',a,p:projected.get(a.id)});for(let a of scene.rings)objects.push({z:project(a,w,h).z,kind:'ring',alpha:a.alpha??1,p:project({...a,r:.19},w,h)});objects.sort((a,b)=>a.z-b.z);
+for(let o of objects){if(o.kind==='link'){ctx.globalAlpha=(key==='screw'?.65:.22)*Math.min(o.a.alpha,o.b.alpha)*(o.a.edgeAlpha??1)*(o.b.edgeAlpha??1);ctx.strokeStyle='#5b8490';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(o.pa.x,o.pa.y);ctx.lineTo(o.pb.x,o.pb.y);ctx.stroke();continue}if(o.kind==='ring'){ctx.globalAlpha=o.alpha??1;ctx.strokeStyle='#61757a';ctx.setLineDash([3,4]);ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(o.p.x,o.p.y,o.p.r,0,TAU);ctx.stroke();ctx.setLineDash([]);continue}let {a,p}=o;if(a.mesh||p.r<=0)continue;ctx.globalAlpha=a.alpha*(key==='grain'?1:a.focus?1:Math.max(.28,Math.min(1,.72+p.z*.13)));let color=a.color==='gold'?['#d1b78d','#a17e49']:['#94b5b9','#467d88'];const grad=ctx.createRadialGradient(p.x-p.r*.3,p.y-p.r*.35,p.r*.05,p.x,p.y,p.r);grad.addColorStop(0,color[0]);grad.addColorStop(1,color[1]);ctx.fillStyle=grad;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill();if(a.focus){ctx.globalAlpha=a.alpha;ctx.strokeStyle='#64777a';ctx.lineWidth=1.3;ctx.beginPath();ctx.arc(p.x,p.y,p.r+3,0,TAU);ctx.stroke()}if(a.tag&&p.r>=5){ctx.fillStyle='#fffdf6';ctx.globalAlpha=a.alpha;ctx.font=`600 ${Math.max(10,Math.min(13,p.r*1.2))}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(a.tag,p.x,p.y+.3)}}ctx.globalAlpha=1;ctx.font='13px system-ui';ctx.fillStyle='#5d7379';ctx.textAlign='center';ctx.textBaseline='middle';for(let a of scene.labels){let p=project(a,w,h);ctx.fillText(a.text,p.x,p.y)}
+}
+const normalText={vac:'每一个位置都有原子，中央也不例外。',inter:'原子只占据规则位置，间隙里没有额外原子。',sub:'中央和周围都是同一种原子。',frenkel:'原子仍在原位，旁边的间隙是空的。',anti:'两种原子按各自的位置交替排列。',edge:'上下原子列连续，没有在内部终止的额外列。',screw:'这一片晶面是平的，绕一圈没有高度差。',grain:'两边原子行的方向一致，能够接续。',stack:'密排层按 ABCABCAB 的顺序重复。',twin:'堆垛次序持续重复，没有在中间反向。',void:'内部位置也有原子，没有一块空区。',precip:'相同数量的另一组分分散在基体中。'};
+Object.assign(D.inter,{look:'中央四个位置之间，多出一个同种原子；细描边帮助找到它。',not:'这是自间隙原子。为看清关系使用简化点阵，周围弹性松弛未计算。'});
+Object.assign(D.sub,{look:'中央的暖金色原子占据规则位置；它与蓝灰宿主属于不同组分。'});
+Object.assign(D.edge,{look:'上半部中央比下半部多一列；细描边圈出这列的终止处。',reading:'先在正面找到额外列的末端，再沿深度展开：每层的末端连成位错线。'});
+Object.assign(D.screw,{look:'网格表示一片晶面。沿网格绕行后，两端不在同一高度。',reading:'对照平面与螺旋晶面，再从侧面看一圈两端的高度差。'});
+Object.assign(D.precip,{title:'另一组分从分散分布，变成内部的一团富集区。',look:'暖金色组分集中在内部一块区域，周围是蓝灰基体。',not:'此图只表示一种成分不同的析出物及其空间分布。富集本身不足以证明形成第二相；真实析出还涉及结构、热力学和扩散。'});
+const single='蓝灰球：同一种原子；细描边仅提示关注位置，虚线圈表示空位置。';
+function meta(){const d=D[key],moving=q>0&&q<1,normal=q===0;
+$('[data-title]').textContent=moving?'在同一位置比较前后排列':normal?normalText[key]:d.title;
+$('[data-state]').textContent=moving?'正在对照 · 非真实迁移过程':normal?(key==='precip'?'分散固溶 · 基准':'正常排列 · 基准'):d.name+' · 示意';
+$('[data-view]').textContent=key==='screw'?'晶面网格，不是原子':d.group==='volume'?(extra?'外层可见':'前面两层已隐藏'):extra?'沿深度观察':'正面观察';
+$('[data-normal]').textContent=key==='precip'?'分散固溶':'正常排列';$('[data-defect]').textContent=key==='precip'?'内部析出':'有缺陷';
+$('[data-normal]').setAttribute('aria-pressed',String(targetQ===0));$('[data-defect]').setAttribute('aria-pressed',String(targetQ===1));
+$('[data-action]').textContent=key==='screw'?(extra?'斜看晶面':'侧面看高度'):d.group==='volume'?(extra?'隐藏前面两层':'显示完整外层'):extra?'回到正面':d.action;
+$('[data-legend]').textContent=key==='screw'?'细线：晶面形状的网格，不是原子或化学键。':['sub','anti','precip'].includes(key)?'蓝灰球：宿主组分；暖金球：另一组分。颜色始终不变。':single;
+$('[data-reading]').textContent=moving?'这是结构对照：位置变化用于追踪前后对应，不代表原子真实走过的路径。':normal?'这是基准。切到另一状态，观察同一位置发生了什么变化。':key==='edge'&&extra?'细描边圈出的末端沿深度排成一条线。不是整张半层都被标成缺陷。':d.reading;
+$('[data-look]').textContent=moving?'等切换结束后，看同一位置的排列。':normal?normalText[key]:d.look;
+$('[data-why]').textContent=d.why;$('[data-not]').textContent=d.not;
+const seq=$('[data-sequence]');seq.hidden=!['stack','twin'].includes(key);seq.style.letterSpacing='1px';seq.textContent='从下往上：'+scene.labels.map(l=>l.text).join(' · ');
+cv.setAttribute('aria-label',$('[data-state]').textContent+'。'+$('[data-look]').textContent);
+$$('[data-group]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.group===d.group)));$$('[data-key]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.key===key)));
+}
+function endpoint(normal){ideal=normal;return build()}
+function mix(a,b,t){const am=new Map(a.atoms.map(x=>[x.id,x])),bm=new Map(b.atoms.map(x=>[x.id,x])),out=new Map;
+for(const id of new Set([...am.keys(),...bm.keys()])){let aa=am.get(id),bb=bm.get(id);aa=aa||{...bb,alpha:0};bb=bb||{...aa,alpha:0};const x={...aa,focus:t>.5?bb.focus:aa.focus};for(const v of ['x','y','z','r','alpha'])x[v]=aa[v]+(bb[v]-aa[v])*t;
+if(key==='anti'&&Math.abs(aa.x-bb.x)>.1)x.y+=Math.sin(Math.PI*t)*(x.color==='blue'?.32:-.32);out.set(id,x)}
+const edgeMap=new Map;for(const [state,weight]of [[a,1-t],[b,t]])for(const [x,y]of state.links){const id=[x.id,y.id].sort().join('|');if(!edgeMap.has(id))edgeMap.set(id,{x:x.id,y:y.id,w:0});edgeMap.get(id).w+=weight}
+const links=[...edgeMap.values()].map(e=>[{...out.get(e.x),edgeAlpha:e.w},{...out.get(e.y),edgeAlpha:1}]);
+return{atoms:[...out.values()],links,rings:[...a.rings.map(x=>({...x,alpha:1-t})),...b.rings.map(x=>({...x,alpha:t}))],labels:a.labels.map((la,i)=>{const lb=b.labels[i];return{...la,x:la.x+(lb.x-la.x)*t,y:la.y+(lb.y-la.y)*t,z:la.z+(lb.z-la.z)*t,text:t===0?la.text:t===1?lb.text:la.text===lb.text?la.text:la.text+'↔'+lb.text}})}}
+function render(){if(key==='grain'){scene=build(q)}else{const a=endpoint(true),b=endpoint(false);scene=mix(a,b,q)}draw()}
+function refresh(){render();meta()}
+function select(k){cancelAnimationFrame(animation);cancelAnimationFrame(viewAnimation);key=k;q=targetQ=1;extra=false;zoom=1;reveal=1;yaw=key==='screw'?.5:0;pitch=key==='screw'?.5:0;if(D[key].group==='volume'){yaw=-.25;pitch=.18}
+$('.ca-types').replaceChildren();for(const [id,d]of Object.entries(D))if(d.group===D[key].group){const b=document.createElement('button');b.textContent=d.name;b.dataset.key=id;b.className='cursor-interaction';b.onclick=()=>select(id);$('.ca-types').appendChild(b)}refresh()}
+$$('[data-group]').forEach(b=>b.onclick=()=>select(Object.keys(D).find(k=>D[k].group===b.dataset.group)));
+function compare(normal){cancelAnimationFrame(animation);targetQ=normal?0:1;const from=q,start=performance.now(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tick(now){const t=reduced?1:Math.min(1,(now-start)/850);q=from+(targetQ-from)*t*t*(3-2*t);render();if(t===1){q=targetQ;refresh()}else{if(t<.1)meta();animation=requestAnimationFrame(tick)}}animation=requestAnimationFrame(tick)}
+$('[data-normal]').onclick=()=>compare(true);$('[data-defect]').onclick=()=>compare(false);
+function animateView(ty,tp){cancelAnimationFrame(viewAnimation);const sy=yaw,sp=pitch,start=performance.now(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;function tick(now){const t=reduced?1:Math.min(1,(now-start)/550),e=t*t*(3-2*t);yaw=sy+(ty-sy)*e;pitch=sp+(tp-sp)*e;draw();if(t<1)viewAnimation=requestAnimationFrame(tick)}viewAnimation=requestAnimationFrame(tick)}
+$('[data-action]').onclick=()=>{extra=!extra;reveal=extra?4:1;refresh();if(D[key].group!=='volume')animateView(key==='screw'?(extra?0:.5):extra?-.65:0,key==='screw'?(extra?0:.5):extra?.22:0)};
+$$('[data-camera]').forEach(b=>b.onclick=()=>{cancelAnimationFrame(viewAnimation);let v=b.dataset.camera;if(v==='front'){yaw=0;pitch=0}else if(v==='tilt'){yaw=-.65;pitch=.3}else if(v==='left')yaw-=.3;else if(v==='right')yaw+=.3;else zoom=Math.max(.65,Math.min(1.6,zoom*(v==='in'?1.15:1/1.15)));draw()});
+let pointers=new Map(),previous=null;function gesture(){const p=[...pointers.values()];return p.length>1?{x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2,d:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)}:p.length?{...p[0],d:0}:null}
+cv.onpointerdown=e=>{cancelAnimationFrame(viewAnimation);cv.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});previous=gesture()};cv.onpointermove=e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const n=gesture();if(previous){if(n.d&&previous.d)zoom=Math.max(.65,Math.min(1.6,zoom*n.d/previous.d));else if(!n.d&&!previous.d){yaw+=(n.x-previous.x)*.009;pitch=Math.max(-1.15,Math.min(1.15,pitch+(n.y-previous.y)*.009))}}previous=n;draw()};function release(e){pointers.delete(e.pointerId);previous=gesture()}cv.onpointerup=release;cv.onpointercancel=release;cv.onlostpointercapture=release;
+new ResizeObserver(draw).observe(cv);select('stack');
+})();
+</script>
+</div>

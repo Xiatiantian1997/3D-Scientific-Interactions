@@ -1,0 +1,43 @@
+<div id="cvd-furnace">
+<style>
+#cvd-furnace{color:var(--foreground);padding:8px 0;max-width:736px;margin:auto}#cvd-furnace canvas{width:100%;height:440px;display:block}#cvd-furnace .row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}#cvd-furnace input{width:100%}#cvd-furnace .space{margin-top:16px}#cvd-furnace .detail{min-height:72px}#cvd-furnace .part-list{display:flex;flex-wrap:wrap;gap:8px}
+</style>
+<h3>硅烷 LPCVD · 炉管里面是什么？</h3>
+<div class="text-small">水平热壁炉管 · 结构示意，不是设备操作规程</div>
+<canvas role="img" aria-label="气体经流量控制器进入石英炉管，外侧电阻加热器加热管壁与晶圆，尾气经过压力控制阀、真空泵及处理系统"></canvas>
+<div class="row"><label for="f-shell">透视外层，露出石英管与晶舟</label><button class="btn pause">暂停气流</button></div>
+<input id="f-shell" class="form-range" type="range" min="0" max="100" value="72">
+<div class="text-small">流动短线＝气体流向；透明度只改变观察方式。</div>
+<div class="part-list space" aria-label="查看部件作用">
+<button class="btn" data-part="gas" aria-pressed="false">进气</button><button class="btn" data-part="heat" aria-pressed="false">加热</button><button class="btn" data-part="wafer" aria-pressed="true">晶舟与晶圆</button><button class="btn" data-part="pressure" aria-pressed="false">控压</button><button class="btn" data-part="exhaust" aria-pressed="false">排气</button>
+</div>
+<p class="detail" aria-live="polite">晶舟托住一批竖放的晶圆。晶圆之间留有间距，反应物进入间隙、到达表面；硅沉积在表面，含氢产物离开。</p>
+</div>
+<script>
+(()=>{const r=document.getElementById('cvd-furnace'),c=r.querySelector('canvas'),g=c.getContext('2d'),q=s=>r.querySelector(s),bs=[...r.querySelectorAll('[data-part]')];let peel=.72,part='wafer',clock=0,last=0,visible=true,paused=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const descriptions={gas:'质量流量控制器（MFC）控制送入多少气体。这里以硅烷为反应气；氮气属于另一路吹扫气，图中没有把吹扫与沉积画成同时发生。',heat:'电阻加热器包在石英管外。管壁与内部晶圆都被加热，所以叫“热壁”。分区加热帮助控制沿炉管的温度分布；热的管壁也可能长膜。',wafer:'晶舟托住一批竖放的晶圆。晶圆之间留有间距，反应物进入间隙、到达表面；硅沉积在表面，含氢产物离开。',pressure:'压力计测炉内压力，控制器据此调节下游节流阀；阀门改变抽气通道的有效通导。进气、反应和抽气共同决定压力，MFC并不独自控制压力。',exhaust:'真空泵持续抽走未反应气体与反应产物，尾气进入处理系统。排出物不能简单当成只有氢气；实际设备还会有按工艺配置的捕集、隔离及保护部件。'};
+const probe=document.createElement('span');probe.style.display='none';r.appendChild(probe);function color(v){probe.style.color=v;return getComputedStyle(probe).color}function palette(){return{ink:color('var(--foreground)'),muted:color('var(--muted-foreground)'),line:color('var(--border)'),base:color('var(--muted)'),surface:color('var(--background)'),wafer:color('var(--viz-series-1, var(--blue))'),heat:color('var(--viz-series-2, var(--orange))')}}
+function draw(){let w=c.clientWidth,h=440,d=devicePixelRatio||1;if(c.width!==Math.round(w*d)||c.height!==h*d){c.width=Math.round(w*d);c.height=h*d}g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);let p=palette();g.font=getComputedStyle(r).font;g.lineCap='round';
+function text(s,x,y,align='left'){g.fillStyle=p.ink;g.textAlign=align;g.fillText(s,x,y)}
+function line(pts,color=p.muted,width=1.3,dash=[]){g.strokeStyle=color;g.lineWidth=width;g.setLineDash(dash);g.beginPath();pts.forEach((v,i)=>i?g.lineTo(...v):g.moveTo(...v));g.stroke();g.setLineDash([])}
+function box(x,y,b,h,label,selected=false){g.fillStyle=p.base;g.beginPath();g.roundRect(x,y,b,h,8);g.fill();if(selected){g.strokeStyle=p.wafer;g.lineWidth=1.8;g.stroke()}text(label,x+b/2,y+h/2+5,'center')}
+function flow(pts){line(pts,p.line,2);g.strokeStyle=p.wafer;g.lineWidth=2.5;g.setLineDash([7,14]);g.lineDashOffset=-clock*22;g.beginPath();pts.forEach((v,i)=>i?g.lineTo(...v):g.moveTo(...v));g.stroke();g.setLineDash([]);g.lineDashOffset=0}
+let x=22,rx=w-22,tubeY=147,tubeH=139;let mfcX=w*.44;
+text('SiH₄',18,32);box(mfcX-32,10,64,38,'MFC',part==='gas');flow([[63,27],[mfcX-32,27]]);flow([[mfcX+32,27],[w-13,27],[w-13,83],[13,83],[13,202],[x+22,202]]);
+text('进气管',18,70);text('加热炉 · 剖开观察',w/2,119,'center');
+g.fillStyle=p.base;g.beginPath();g.roundRect(x,tubeY,rx-x,tubeH,24);g.fill();
+// Quartz tube wall: one continuous vessel, with wafers transverse to the tube axis.
+line([[x+16,tubeY+21],[rx-16,tubeY+21]],p.muted);line([[x+16,tubeY+tubeH-21],[rx-16,tubeY+tubeH-21]],p.muted);
+g.strokeStyle=p.muted;g.lineWidth=1;g.beginPath();g.ellipse(x+16,tubeY+tubeH/2,9,tubeH/2-21,0,0,Math.PI*2);g.stroke();g.beginPath();g.ellipse(rx-16,tubeY+tubeH/2,9,tubeH/2-21,0,0,Math.PI*2);g.stroke();
+let start=x+42,end=rx-42,n=Math.max(4,Math.min(9,Math.floor((end-start)/26)));for(let i=0;i<n;i++){let wx=start+i*(end-start)/(n-1);g.fillStyle=p.wafer;g.globalAlpha=.78;g.beginPath();g.ellipse(wx,218,6,30,0,0,Math.PI*2);g.fill();g.globalAlpha=1;if(part==='wafer'){g.strokeStyle=p.wafer;g.lineWidth=1;g.stroke()}}
+line([[start-12,251],[end+12,251]],p.muted,4);text('晶舟',w/2,279,'center');
+flow([[x+23,192],[start-10,181],[end+10,181],[rx-18,200]]);flow([[x+23,213],[start-10,259],[end+10,259],[rx-18,234]]);
+for(let i=0;i<3;i++){let z=x+8+i*(rx-x-16)/3,b=(rx-x-16)/3-4;g.globalAlpha=.15+.6*(1-peel);g.fillStyle=p.heat;g.beginPath();g.roundRect(z,134,b,166,12);g.fill();g.globalAlpha=1;line([[z+5,140],[z+b-5,140]],p.heat,5);line([[z+5,294],[z+b-5,294]],p.heat,5)}
+if(part==='heat'){text('外侧电阻加热',w/2,322,'center')}else{text('石英管内：晶圆与气体',w/2,322,'center')}
+let a=w*.19,b=w*.5,e=w*.81;let bw=Math.min(84,w*.27);flow([[rx-12,217],[w-9,217],[w-9,345],[a,345],[a,369]]);box(a-bw/2,369,bw,40,'节流阀',part==='pressure');box(b-bw/2,369,bw,40,'真空泵',part==='exhaust');box(e-bw/2,369,bw,40,'尾气处理',part==='exhaust');flow([[a+bw/2,389],[b-bw/2,389]]);flow([[b+bw/2,389],[e-bw/2,389]]);
+// Pressure tap measures the chamber, not pump outlet. Dashed line is electrical feedback.
+line([[rx-28,169],[rx-28,128]],p.muted);text('压力计',rx-2,128,'right');if(part==='pressure'){line([[rx-6,132],[w-3,132],[w-3,360],[a,360],[a,369]],p.muted,1,[2,4]);text('虚线：控压信号',14,432)}else{text('排出：余气与反应产物',w/2,432,'center')}
+}
+q('#f-shell').oninput=e=>{peel=+e.target.value/100;draw()};bs.forEach(b=>b.onclick=()=>{part=b.dataset.part;bs.forEach(x=>x.setAttribute('aria-pressed',x===b));q('.detail').textContent=descriptions[part];draw()});q('.pause').onclick=()=>{paused=!paused;q('.pause').textContent=paused?'播放气流':'暂停气流'};q('.pause').textContent=paused?'播放气流':'暂停气流';new ResizeObserver(draw).observe(r);new IntersectionObserver(es=>visible=es[0].isIntersecting).observe(r);draw();function tick(now){let dt=Math.min(.05,(now-last)/1000||0);last=now;if(!paused&&visible&&!document.hidden){clock+=dt;draw()}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+})();
+</script>

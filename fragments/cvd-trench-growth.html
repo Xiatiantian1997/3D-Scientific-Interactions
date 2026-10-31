@@ -1,0 +1,55 @@
+<div id="cvd-trench-growth">
+<style>
+#cvd-trench-growth{color:var(--foreground);padding:8px 0}#cvd-trench-growth .space{margin-top:18px}#cvd-trench-growth canvas{display:block;width:100%;height:360px}#cvd-trench-growth .micro{height:210px}#cvd-trench-growth .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}#cvd-trench-growth input{width:100%}#cvd-trench-growth .legend{display:flex;gap:16px;flex-wrap:wrap}#cvd-trench-growth .swatch{display:inline-block;width:12px;height:12px;margin-right:6px;background:var(--viz-series-1)}
+</style>
+<h3>入口先变窄，里面还能长吗？</h3>
+<div class="viz-controls"><button class="btn" data-mode="poor" aria-pressed="true">口部优先生长</button><button class="btn" data-mode="good" aria-pressed="false">较均匀覆盖</button></div>
+<div class="space row"><label for="cg-ar">深宽比 · 固定初始宽度</label><output id="cg-ar-value">3 : 1</output></div>
+<input id="cg-ar" class="form-range" type="range" min="1" max="4" step="0.5" value="3">
+<canvas class="growth" role="img" aria-label="沟槽截面连续成膜，口部收窄，封口后内部停止生长"></canvas>
+<div class="legend text-small"><span><i class="swatch"></i>沉积薄膜</span><span>虚线：同进度另一种覆盖轮廓</span></div>
+<p class="status" aria-live="polite">口部先长厚，深处较薄</p>
+<div class="viz-controls"><button class="btn pause">暂停</button><button class="btn replay">重播生长</button></div>
+<label class="form-label space" for="cg-time">生长进度 · 拖动查看</label><input id="cg-time" class="form-range" type="range" min="0" max="1000" value="0">
+<div class="text-small">形貌趋势示意 · 相同顶部厚度比较 · 非工艺预测</div>
+<hr>
+<h3>抵达表面，还不一定就固定下来</h3>
+<div class="viz-controls"><button class="btn" data-path="reemission" aria-pressed="true">离面再发射</button><button class="btn" data-path="migration" aria-pressed="false">沿面迁移</button></div>
+<canvas class="micro" role="img" aria-label="菱形表示参与沉积的物种，比较离开表面再到达另一处与沿面迁移"></canvas>
+<div class="row"><span class="text-small">◇ 参与沉积的物种，不是晶核</span><button class="btn micro-replay">重播路径</button></div>
+<div class="text-small space">两种机制分开示意；此处切换不改变上方生长模型。</div>
+</div>
+<script>
+(()=>{
+const root=document.getElementById('cvd-trench-growth'),q=s=>root.querySelector(s),all=s=>root.querySelectorAll(s);
+let mode='poor',ar=3,t=0,paused=matchMedia('(prefers-reduced-motion: reduce)').matches,path='reemission',mt=0,visible=true,last=0,status='';
+const canv=q('.growth'),micro=q('.micro');
+const probe=document.createElement('span');probe.style.display='none';root.appendChild(probe);function col(v){probe.style.color=v;return getComputedStyle(probe).color}function colors(){return {ink:col('var(--foreground)'),muted:col('var(--muted-foreground)'),base:col('var(--muted)'),film:col('var(--viz-series-1, var(--blue))'),border:col('var(--border)')}}
+function setup(c){let w=c.clientWidth,h=c.clientHeight,d=devicePixelRatio||1;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}let g=c.getContext('2d');g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);g.font=getComputedStyle(root).font;return [g,w,h]}
+function profile(y,a,m){return a*(m==='poor'?.14+.86*Math.exp(-1.35*y):.88+.12*Math.exp(-.18*y))}
+function growth(){let [g,w]=setup(canv),c=colors(),W=Math.min(110,200/ar),H=W*ar,L=(w-W)/2,R=L+W,Y=80,B=Y+H,a=t*.61,inner=Math.min(.5,a),closed=a>=.5;
+g.fillStyle=c.base;g.beginPath();g.moveTo(14,Y);g.lineTo(L,Y);g.lineTo(L,B);g.lineTo(R,B);g.lineTo(R,Y);g.lineTo(w-14,Y);g.lineTo(w-14,B+25);g.lineTo(14,B+25);g.closePath();g.fill();
+function film(m,ghost){let bottom=profile(ar,inner,m)*W;g.beginPath();g.moveTo(14,Y-a*W);g.lineTo(L+inner*W,Y-a*W);for(let j=0;j<=80;j++){let y=ar*j/80;g.lineTo(L+profile(y,inner,m)*W,Math.min(B-bottom,Y+y*W))}g.lineTo(R-profile(ar,inner,m)*W,B-bottom);for(let j=80;j>=0;j--){let y=ar*j/80;g.lineTo(R-profile(y,inner,m)*W,Math.min(B-bottom,Y+y*W))}g.lineTo(R-inner*W,Y-a*W);g.lineTo(w-14,Y-a*W);g.lineTo(w-14,Y);g.lineTo(R,Y);g.lineTo(R,B);g.lineTo(L,B);g.lineTo(L,Y);g.lineTo(14,Y);g.closePath();if(ghost){g.strokeStyle=c.muted;g.lineWidth=1;g.setLineDash([4,5]);g.stroke();g.setLineDash([])}else{g.fillStyle=c.film;g.globalAlpha=.68;g.fill();g.fillRect(L,B-bottom,W,bottom);if(closed)g.fillRect(L,Y-a*W,W,a*W+2);g.globalAlpha=1}}
+film(mode,false);film(mode==='poor'?'good':'poor',true);
+g.fillStyle=c.ink;g.textAlign='left';g.fillText('沟槽截面',14,23);g.textAlign='right';g.fillText(closed?'入口已封闭':'气相供料',w-14,23);
+if(!closed){let gap=W*(1-2*inner);g.strokeStyle=c.muted;g.lineWidth=1.5;for(let i=-1;i<=1;i++){let x=w/2+i*gap*.25;g.beginPath();g.moveTo(x,31);g.lineTo(x,53-a*W*.28);g.stroke()}}
+g.textAlign='center';g.fillStyle=c.ink;if(closed)g.fillText('残留空腔',w/2,Y+H*.58);else if(t>.2)g.fillText('未填充',w/2,Y+H*.62);
+let next=closed?'入口封闭：内部不再获得外部供料':mode==='poor'?(t>.55?'口部收窄，内部仍有很大空间':'口部先长厚，深处较薄'):'侧壁与底部覆盖更接近，空隙逐渐缩小';if(next!==status){status=next;q('.status').textContent=next}
+}
+function microscopic(){let [g,w]=setup(micro),c=colors(),x0=w*.28,x1=w*.7,Y=148;g.fillStyle=c.base;g.fillRect(12,Y,w-24,27);g.strokeStyle=c.border;g.beginPath();g.moveTo(12,Y);g.lineTo(w-12,Y);g.stroke();
+let points=path==='reemission'?[[x0-30,38],[x0,Y-8],[w*.49,65],[x1,Y-8]]:[[x0-30,38],[x0,Y-8],[w*.49,Y-8],[x1,Y-8]];
+let u=Math.min(mt/7,1),seg=Math.min(2,Math.floor(u*3)),v=u===1?1:u*3-seg,p=points[seg],n=points[seg+1],x=p[0]+(n[0]-p[0])*v,y=p[1]+(n[1]-p[1])*v;
+g.strokeStyle=c.muted;g.lineWidth=1;g.setLineDash([3,5]);g.beginPath();points.forEach((p,i)=>i?g.lineTo(...p):g.moveTo(...p));g.stroke();g.setLineDash([]);
+g.fillStyle=c.film;g.beginPath();g.moveTo(x,y-7);g.lineTo(x+7,y);g.lineTo(x,y+7);g.lineTo(x-7,y);g.closePath();g.fill();if(u===1){g.strokeStyle=c.film;g.lineWidth=2;g.beginPath();g.moveTo(x,y+7);g.lineTo(x,Y+8);g.stroke()}
+g.fillStyle=c.ink;g.textAlign='left';g.fillText(u===1?'最终并入薄膜':u<1/3?'到达表面':path==='reemission'?'离开表面，再到另一处':'保持吸附，沿表面移动',12,25);g.fillText('表面',12,199)
+}
+function draw(){growth();microscopic()}
+all('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;all('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()});
+all('[data-path]').forEach(b=>b.onclick=()=>{path=b.dataset.path;mt=0;all('[data-path]').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()});
+function sync(){q('.pause').textContent=paused?'继续':'暂停'}
+q('#cg-ar').oninput=e=>{ar=+e.target.value;q('#cg-ar-value').value=ar+' : 1';t=0;q('#cg-time').value=0;draw()};
+q('#cg-time').oninput=e=>{t=+e.target.value/1000;paused=true;sync();draw()};q('.pause').onclick=()=>{paused=!paused;sync()};q('.replay').onclick=()=>{t=0;paused=false;sync()};q('.micro-replay').onclick=()=>{mt=0;paused=false;sync()};
+new IntersectionObserver(es=>visible=es[0].isIntersecting).observe(root);new ResizeObserver(draw).observe(root);sync();draw();
+function tick(now){let dt=Math.min(.05,(now-last)/1000||0);last=now;if(visible&&!document.hidden&&!paused){t=Math.min(1,t+dt/17);mt=Math.min(7,mt+dt);q('#cg-time').value=Math.round(t*1000);draw()}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+})();
+</script>

@@ -1,0 +1,124 @@
+{
+  "version": "3.0",
+  "goal": "在三维中辨认炉壳、石英管、晶舟、端盖及接口，区分观察拆解与真实工艺。",
+  "model": {
+    "assumptions": "三维比例与部件数量简化；上下分离是教学剖开，不是实际拆卸顺序；独立Canvas网格投影，没有Anatomy全几何审计。",
+    "evidence": "MKS LPCVD Systems handbook；University of Michigan LNF LPCVD equipment documentation。"
+  },
+  "states": [
+    {
+      "id": "assembled",
+      "meaning": "完整装配"
+    },
+    {
+      "id": "open",
+      "meaning": "教学拆解"
+    },
+    {
+      "id": "rotated",
+      "meaning": "相机旋转"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "wafer",
+      "role": "identity",
+      "meaning": "硅晶圆"
+    },
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "heater",
+      "role": "identity",
+      "meaning": "电阻加热区"
+    },
+    {
+      "scope": "all",
+      "channel": "dash motion",
+      "token": "flow",
+      "role": "quantity",
+      "meaning": "气体流向示意，不是分子轨迹"
+    }
+  ],
+  "actions": [
+    {
+      "id": "explode",
+      "kind": "observe",
+      "changes": [
+        "assembly presentation offsets"
+      ],
+      "fixed": [
+        "wafer spacing",
+        "component identities",
+        "process temperature"
+      ],
+      "feedback": "各部件整体分离"
+    },
+    {
+      "id": "camera",
+      "kind": "observe",
+      "changes": [
+        "camera azimuth",
+        "camera elevation",
+        "camera zoom"
+      ],
+      "fixed": [
+        "model geometry"
+      ],
+      "feedback": "重新投影同一结构"
+    },
+    {
+      "id": "select",
+      "kind": "observe",
+      "changes": [
+        "attention",
+        "assembly presentation offsets"
+      ],
+      "fixed": [
+        "wafer spacing",
+        "component identities"
+      ],
+      "feedback": "展开到能看见所选部件的位置并解释"
+    }
+  ],
+  "comparison": {
+    "required": false,
+    "reason": "本任务解释设备结构，外壳透视只属于观察，不是异常或参数比较"
+  },
+  "preserved": [
+    {
+      "feature": "自动动画、手机布局",
+      "status": "retained",
+      "evidence": "自动气流示意与可见暂停入口"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "tested",
+      "evidence": "check-cvd-geometry.cjs: 35 pose/angle cases, finite vertices/projections, fixed wafer span and staged door/boat separation; not collision audit."
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "Components retain identity; cutaway labeled as teaching observation; assembled and apart states not deposition dynamics."
+    },
+    {
+      "area": "interaction",
+      "status": "tested",
+      "evidence": "Browser set explode to 1000 and rotated right; matched visible state and screenshot. Script syntax checked."
+    },
+    {
+      "area": "layout",
+      "status": "tested",
+      "evidence": "Browser default desktop and 320px container screenshots; controls wrap. Canvas height subsequently tied to component width."
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "Browser preview tested; Android pinch and actual device performance unverified."
+    }
+  ]
+}

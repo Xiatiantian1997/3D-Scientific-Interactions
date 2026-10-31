@@ -1,0 +1,146 @@
+{
+  "version": "3.0",
+  "goal": "看见口部优先生长如何缩窄入口并留下空腔，区分再发射与沿面迁移。",
+  "model": {
+    "assumptions": "归一化形貌构造，不是校准工艺预测；厚度按深度衰减，封口后冻结内部生长。；微观路径为机制示意，不是分子动力学；不显示晶核滚动。",
+    "evidence": "Cheng et al. 1991 doi:10.1063/1.104988；LPCVD oxide reemission evidence"
+  },
+  "states": [
+    {
+      "id": "depleted",
+      "meaning": "深处供料不足的构造"
+    },
+    {
+      "id": "uniform",
+      "meaning": "供料较充分的构造"
+    },
+    {
+      "id": "closed",
+      "meaning": "入口闭合，内腔不再获得外部供料"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "film",
+      "role": "identity",
+      "meaning": "沉积薄膜"
+    },
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "substrate",
+      "role": "identity",
+      "meaning": "基底"
+    },
+    {
+      "scope": "all",
+      "channel": "shape",
+      "token": "diamond",
+      "role": "identity",
+      "meaning": "参与沉积的物种示意，非晶核"
+    }
+  ],
+  "actions": [
+    {
+      "id": "regime",
+      "kind": "compare",
+      "changes": [
+        "depth attenuation"
+      ],
+      "fixed": [
+        "top thickness",
+        "geometry",
+        "camera"
+      ],
+      "feedback": "同位置切换覆盖轮廓"
+    },
+    {
+      "id": "time",
+      "kind": "construct",
+      "changes": [
+        "top thickness",
+        "film geometry"
+      ],
+      "fixed": [
+        "initial width",
+        "aspect ratio"
+      ],
+      "feedback": "连续生长并收窄入口"
+    },
+    {
+      "id": "ar",
+      "kind": "model",
+      "changes": [
+        "depth",
+        "film geometry"
+      ],
+      "fixed": [
+        "initial width"
+      ],
+      "feedback": "重播不同深度的沟槽"
+    },
+    {
+      "id": "path",
+      "kind": "observe",
+      "changes": [
+        "mechanism illustration"
+      ],
+      "fixed": [
+        "growth model"
+      ],
+      "feedback": "只比较物种路径，不改变上方模型"
+    }
+  ],
+  "comparison": {
+    "required": true,
+    "baseline": "uniform",
+    "target": "depleted",
+    "action": "regime",
+    "fixed": [
+      "top thickness",
+      "geometry"
+    ],
+    "placement": "主图上方"
+  },
+  "preserved": [
+    {
+      "feature": "自动过程动画、暂停、拖动进度、同位置对照",
+      "status": "retained",
+      "evidence": "主图控件"
+    },
+    {
+      "feature": "此前宏观与硅烷化学内容",
+      "status": "changed_with_reason",
+      "evidence": "本次单独重做沟槽模块，不覆盖旧讲义"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "reviewed",
+      "evidence": "封口钳制内部厚度；无定量工艺读数"
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "薄膜连续区域与物种菱形分开"
+    },
+    {
+      "area": "interaction",
+      "status": "tested",
+      "evidence": "Node mock canvas executed autoplay, 7 ARs, 4 progress states, coverage and mechanism switching; not actual browser test"
+    },
+    {
+      "area": "layout",
+      "status": "pending",
+      "evidence": "待窄屏检查"
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "无Android真机"
+    }
+  ]
+}

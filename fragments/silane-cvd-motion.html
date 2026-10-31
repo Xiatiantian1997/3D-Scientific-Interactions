@@ -1,0 +1,116 @@
+<div id="silane-motion">
+<style>
+#silane-motion{--paper:#f5f1e5;--surface:#fffcf4;--ink:#294d57;--muted:#617277;--silicon:#4b8490;--hydrogen:#b18b52;--base:#d9d7c9;--line:#d7d9ce;background:var(--paper);color:var(--ink);font:16px/1.7 system-ui,sans-serif;max-width:820px;margin:auto;padding:26px 22px;border-radius:22px}#silane-motion *{box-sizing:border-box}#silane-motion h2{font-size:26px;line-height:1.4;margin:0 0 10px}#silane-motion h3{font-size:22px;line-height:1.45;margin:0 0 10px}#silane-motion p{margin:8px 0 14px}#silane-motion .muted{font-size:14px;color:var(--muted)}#silane-motion section{padding:26px 0;border-top:1px solid var(--line);margin-top:22px}#silane-motion canvas{width:100%;display:block;background:var(--surface);border-radius:16px}#silane-motion .macro{height:350px}#silane-motion .micro{height:330px}#silane-motion .islands{height:230px}#silane-motion .trench{height:420px}#silane-motion button{font:inherit;color:var(--ink);min-height:44px;padding:8px 13px;border:1px solid var(--line);border-radius:11px;background:var(--surface)}#silane-motion button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}#silane-motion .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}#silane-motion label{display:block;margin:14px 0 2px}#silane-motion input[type=range]{width:100%;height:44px;accent-color:var(--silicon);touch-action:pan-y}#silane-motion .labelrow{display:flex;justify-content:space-between;gap:12px;align-items:baseline}#silane-motion output{font-variant-numeric:tabular-nums;white-space:nowrap}#silane-motion .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin:12px 0}#silane-motion .swatch{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:6px;background:var(--silicon)}#silane-motion .swatch.h{width:9px;height:9px;background:var(--hydrogen)}#silane-motion .state{min-height:3.5em;padding:10px 0;color:var(--ink)}#silane-motion .note{border-left:3px solid #b7b8a2;padding:2px 0 2px 12px;font-size:14px;color:var(--muted)}#silane-motion details{border-top:1px solid var(--line);margin-top:18px;padding-top:6px}#silane-motion summary{padding:10px 0;min-height:44px}#silane-motion a{color:inherit}#silane-motion .bars{display:grid;gap:9px;margin:12px 0}#silane-motion .barrow{display:grid;grid-template-columns:64px 1fr 60px;gap:8px;align-items:center;font-size:14px}#silane-motion .track{height:13px;background:#e1e4d9;border-radius:4px;overflow:hidden}#silane-motion .fill{height:100%;background:var(--silicon);border-radius:4px}#silane-motion .formula{font-size:20px;margin:12px 0}#silane-motion [hidden]{display:none!important}@media(max-width:480px){#silane-motion{padding:20px 13px}#silane-motion h2{font-size:24px}#silane-motion h3{font-size:20px}#silane-motion section{padding-top:22px}#silane-motion .micro{height:320px}#silane-motion .row button{font-size:14px;padding:8px 10px}}
+</style>
+<h2>硅烷 CVD：气体怎样长成膜？</h2>
+<p>画面会自动演示。可以暂停、拖动回看；滚出视野后暂停，不会在下面偷偷播完。</p>
+<p class="muted">热 CVD · 硅烷 SiH₄ → 硅膜 Si · 不加入氧化剂，不是沉积 SiO₂，也不是等离子体 CVD。</p>
+<div class="formula">SiH₄（气） → Si（固） + 2 H₂（气）</div>
+<p class="muted">这是净反应，不是“一次碰撞完成全部反应”。下面的步骤和播放时长均为教学示意。</p>
+<section>
+<h3>气体送到了，表面才有料可用</h3>
+<p>气流把硅烷送到晶圆附近，局部输运再把它送到表面。跟着方框看：硅烷送入，硅留下，氢气排走。</p>
+<div class="row" role="group" aria-label="宏观反应需求"><button data-demand="0.2" aria-pressed="true">反应较慢</button><button data-demand="5" aria-pressed="false">反应较快</button></div>
+<div class="row"><button data-play="macro">暂停动画</button><button data-reset="macro">重播</button></div>
+<canvas class="macro" data-canvas="macro" role="img" aria-label="反应器过程动画：硅烷进入，硅留在表面，氢气排出。方框是物料份额，不是单个分子。"></canvas>
+<div class="state" data-macrotext aria-live="polite"></div>
+<p class="note">方框是一份物料的去向示意，不是单个分子的轨迹。两种情形送入相同份数，用不同等待时长突出反应与供料的关系；不是实际反应时间或浓度计算。每轮结束会明确重播。</p>
+</section>
+<section>
+<h3>留下的是硅，不是整颗硅烷分子</h3>
+<p>大蓝球是 Si，小暖金球是 H。追踪这一颗 SiH₄：硅并入固体，四个氢最终组成两颗 H₂；不是换一种颜色就算完成反应。</p>
+<div class="legend"><span><i class="swatch"></i>硅 Si</span><span><i class="swatch h"></i>氢 H</span><span>实线：化学键的示意</span></div>
+<div class="row" role="group" aria-label="表面结合方式"><button data-bind="chemical" aria-pressed="true">化学成膜：本例</button><button data-bind="physical" aria-pressed="false">物理吸附：概念对照</button></div>
+<canvas class="micro" data-canvas="micro" role="img" aria-label="一个硅原子和四个氢原子的表面反应示意"></canvas>
+<div data-reactioncontrols>
+<div class="labelrow"><label for="cvd-reaction">拖动，看反应前后的对应</label><output data-rstage>到达表面前</output></div>
+<input id="cvd-reaction" type="range" min="0" max="4" step="0.01" value="0">
+<div class="row"><button data-play="reaction">暂停动画</button><button data-reset="reaction">重播</button></div>
+</div>
+<div class="state" data-reactiontext aria-live="polite"></div>
+<p class="note">微观窗口取已长出的硅表面。SiHₓ、表面氢和氢脱附被归并成少数步骤；不是完整基元反应、真实键角或迁移轨迹。物理吸附是概念对照，不表示它必然是本反应的独立必经阶段。</p>
+<details><summary>到底是物理结合，还是化学结合？</summary><p>物理吸附主要由较弱的分子间相互作用维系，不以形成新化学键为特征。化学吸附会形成表面化学键；硅烷成膜涉及 Si—H 键的变化、Si—Si 网络的形成和 H₂ 脱附。</p><p>“吸附在表面”不等于已经形成连续膜。表面氢可能占据反应位点；必须有合适的位点与反应条件，后续生长才能继续。这里也没有把氢脱附指定为所有工况下唯一的限速步骤。</p></details>
+</section>
+<section>
+<h3>先有小岛，再连成一张膜</h3>
+<p>这里换到 <strong>SiO₂ 基底上硅的初始沉积</strong>。成核指形成能够继续长大的小团簇；可能先经历一段孕育期。供料继续，已有硅岛长大，相遇后逐渐连接。</p>
+<canvas class="islands" data-canvas="islands" role="img" aria-label="SiO2基底上硅岛成核、长大与连接的截面形貌示意；蓝色区域不是单个原子。"></canvas>
+<div class="labelrow"><label for="cvd-growth">拖动生长阶段</label><output data-gstage>孕育</output></div>
+<input id="cvd-growth" type="range" min="0" max="1" step="0.002" value="0">
+<div class="row"><button data-play="growth">暂停动画</button><button data-reset="growth">重播</button></div>
+<div class="state" data-growthtext aria-live="polite"></div>
+<p class="note">蓝色轮廓代表含有许多原子的硅岛，灰米色代表 SiO₂ 基底。小岛位置固定，尺寸随持续供料增长；不模拟晶格取向、真实形核速率或晶粒并合动力学。硅单晶上的外延不能照搬这幅岛状生长图。</p>
+</section>
+<section>
+<h3>沟槽越深，里面还能拿到足够的料吗？</h3>
+<p><strong>深宽比 AR = 深度 H ÷ 开口宽度 W。</strong>反应物进入沟槽的同时，也沿途被表面消耗。更深的路程、相对更快的消耗，都可能让底部供应不足。</p>
+<div class="labelrow"><label for="cvd-aspect">深宽比：固定宽度，只改深度</label><output data-ar>2.0</output></div>
+<input id="cvd-aspect" type="range" min="0.5" max="4" step="0.1" value="2">
+<p class="muted">选择表面消耗相对于沟槽内输运的强弱：</p>
+<div class="row" role="group" aria-label="沟槽内消耗与输运比"><button data-da="0.003" aria-pressed="true">较弱</button><button data-da="0.06" aria-pressed="false">中等</button><button data-da="0.5" aria-pressed="false">较强</button></div>
+<div class="row"><button data-reference aria-pressed="false">叠加均匀覆盖参考</button></div>
+<canvas class="trench" data-canvas="trench" role="img" aria-label="沟槽截面：硅膜沿顶部、侧壁与底部生长。可调深宽比，并比较相同顶部厚度下的覆盖。"></canvas>
+<div class="bars" aria-label="模型厚度相对顶部的比值"><div class="barrow"><span>顶部</span><div class="track"><div class="fill" data-bar="top"></div></div><output data-value="top"></output></div><div class="barrow"><span>侧壁中点</span><div class="track"><div class="fill" data-bar="side"></div></div><output data-value="side"></output></div><div class="barrow"><span>底部</span><div class="track"><div class="fill" data-bar="bottom"></div></div><output data-value="bottom"></output></div></div>
+<div class="state" data-covertext aria-live="polite"></div>
+<p class="note">比的是<strong>相同顶部厚度</strong>，不是相同沉积时间。数字来自简化趋势模型，不是硅烷工艺的实际覆盖率预测。顶部厚度统一画为开口宽度的 8%，还未进入封口阶段。</p>
+<details><summary>为什么不能说“反应越快越好”？</summary><p>表面反应快，可以更快消耗到达的反应物；但若沟槽内部补充跟不上，上部先消耗，深处就可能缺料。要同时看沉积速度与厚度分布。</p><p>实际硅烷 CVD 的表面可能接近饱和，还有氢覆盖和多种含硅中间体，覆盖性不一定遵循这幅一阶模型。这里用它隔离“进入”和“沿途消耗”的竞争，不把它当 LPCVD 配方计算器。</p><p>覆盖不均继续发展，可能引起开口收窄，甚至封口后留下空洞；本图不计算移动边界，因此没有直接画出一个看似精确的封口结果。</p></details>
+<details><summary>模型与来源</summary><p>宏观是四份相同供料的去向演示，等待时长人为设定，用来区分供料和表面反应；不输出浓度或速率。反应器到晶圆的输运，与沟槽内部输运仍是两个尺度的问题。</p><p>沟槽：以宽度 W 归一化，深度坐标 z 从开口向下。定常有效输运方程为 c″ − 2Da·c = 0；c(0)=1，c′(AR)=−Da·c(AR)。Da=kₛW/Dₑ，Dₑ代表有效输运能力，可包含低压下壁面碰撞产生的 Knudsen 输运。厚度比取局部 c。固定几何、忽略气相反应、表面饱和与不同晶面的速率差异。</p><p>来源：<a href="https://research.ibm.com/publications/surface-reactions-in-si-chemical-vapor-deposition-from-silane" target="_blank" rel="noopener">硅烷表面反应研究</a> · <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/cvde.200304165" target="_blank" rel="noopener">SiO₂ 上硅的孕育与岛生长</a> · <a href="https://experts.azregents.edu/en/publications/step-coverage-prediction-in-low-pressure-chemical-vapor-depositio/" target="_blank" rel="noopener">低压 CVD 输运—反应覆盖模型</a> · <a href="https://goldbook.iupac.org/terms/view/C01048" target="_blank" rel="noopener">化学吸附定义</a> · <a href="https://goldbook.iupac.org/terms/view/P04667" target="_blank" rel="noopener">物理吸附定义</a></p></details>
+</section>
+<script>
+(()=>{'use strict';const root=document.getElementById('silane-motion'),$=s=>root.querySelector(s),$$=s=>[...root.querySelectorAll(s)],P={ink:'#294d57',muted:'#617277',si:'#4b8490',h:'#b18b52',base:'#d9d7c9',paper:'#fffcf4',line:'#b8c1b9'};
+const state={demand:.2,reaction:0,binding:'chemical',growth:0,aspect:2,da:.003,reference:false};const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;const clocks={macro:{t:0,length:16,visible:false,paused:reduced},reaction:{t:0,length:15,visible:false,paused:reduced},growth:{t:0,length:12,visible:false,paused:reduced}};const canvases=Object.fromEntries($$('[data-canvas]').map(c=>[c.dataset.canvas,c]));
+function setup(name){const cv=canvases[name],w=cv.clientWidth,h=cv.clientHeight,d=Math.min(devicePixelRatio||1,2);cv.width=w*d;cv.height=h*d;const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);c.font='14px system-ui';c.textBaseline='middle';c.lineCap='round';return{c,w,h}}
+function text(c,s,x,y,align='left',color=P.muted){c.fillStyle=color;c.textAlign=align;c.fillText(s,x,y)}
+function line(c,x1,y1,x2,y2,color=P.line,width=1,dash=[]){c.beginPath();c.strokeStyle=color;c.lineWidth=width;c.setLineDash(dash);c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.setLineDash([])}
+function arrow(c,x1,y1,x2,y2,color=P.muted,width=2){line(c,x1,y1,x2,y2,color,width);const a=Math.atan2(y2-y1,x2-x1),r=7;line(c,x2,y2,x2-r*Math.cos(a-.45),y2-r*Math.sin(a-.45),color,width);line(c,x2,y2,x2-r*Math.cos(a+.45),y2-r*Math.sin(a+.45),color,width)}
+function ball(c,x,y,r,type){c.beginPath();c.fillStyle=type==='Si'?P.si:P.h;c.arc(x,y,r,0,Math.PI*2);c.fill()}
+const mix=(a,b,t)=>a+(b-a)*t,clamp=t=>Math.max(0,Math.min(1,t));
+function packet(c,label,x,y,color=P.si){const width=label==='SiH₄'?43:label==='H₂'?25:25;c.fillStyle=P.paper;c.fillRect(x-width/2,y-11,width,22);c.strokeStyle=color;c.lineWidth=1.3;c.strokeRect(x-width/2,y-11,width,22);text(c,label,x,y,'center',color)}
+function macroPacket(i,t,slow,w){const start=i*1.2,age=t-start,x=w*(.23+i*.18),wait=slow?5:1.1;
+if(age<0)return{phase:'outside'};
+if(age<2){const u=age/2;return{phase:'feed',x:mix(23,x,u),y:mix(70,172,u)}}
+if(age<2+wait)return{phase:'wait',x,y:172};
+if(age<2+wait+.6)return{phase:'land',x,y:mix(172,258,(age-2-wait)/.6)};
+return{phase:'reacted',x,exit:age-2-wait-.6}}
+function macro(){const{c,w,h}=setup('macro'),t=clocks.macro.t,slow=state.demand<1;c.strokeStyle=P.line;c.lineWidth=1.3;c.strokeRect(14,50,w-28,244);text(c,'SiH₄ 送入',19,30);text(c,'H₂ 排出',w-19,30,'right');arrow(c,20,70,w*.38,70,P.line,1);arrow(c,w*.7,70,w-19,70,P.line,1);c.fillStyle=P.base;c.fillRect(30,269,w-60,16);c.fillStyle=P.si;c.fillRect(30,265,w-60,4);text(c,'加热晶圆',w/2,309,'center');let arrived=0,waiting=0;
+for(let i=0;i<4;i++){const p=macroPacket(i,t,slow,w);if(p.phase==='outside')continue;if(p.phase==='wait')waiting++;if(p.phase!=='reacted'){packet(c,'SiH₄',p.x,p.y);continue}arrived++;c.fillStyle=P.si;c.fillRect(p.x-12,253,24,12);text(c,'Si',p.x,240,'center',P.si);const u=clamp(p.exit/2.5);if(u<1){for(const d of [-1,1]){const x= u<.65?p.x+d*14:mix(p.x+d*14,w+30,(u-.65)/.35),y=mix(214,78,Math.min(1,u/.65));packet(c,'H₂',x,y,P.h)}}}
+const status=t>13.5?'这一轮完成 · 即将重播':arrived===4?'硅留在膜中，氢气已排出':waiting?'表面附近还有供料等待反应':arrived?'开始成膜：硅留下，氢气离开':'硅烷正被送到晶圆附近';text(c,status,w/2,h-15,'center',P.ink);
+const msg=slow?'反应较慢：供料已到，成膜仍在等待表面反应。':'反应较快：到达的供料更快转化，反应后需要等下一份送来。';if($('[data-macrotext]').textContent!==msg)$('[data-macrotext]').textContent=msg;}
+function reactionAtoms(v,w,h){const cx=w*.5,sy=h-54,step=Math.min(44,w*.13),dx=1.5*step;
+const poses=[[[cx,78],[cx-25,62],[cx+25,62],[cx-25,96],[cx+25,96]],[[cx,sy-65],[cx-25,sy-81],[cx+25,sy-81],[cx-25,sy-47],[cx+25,sy-47]],[[cx,sy-35],[cx-25,sy-53],[cx+25,sy-53],[cx-25,sy-17],[cx+dx,sy-17]],[[cx,sy-28],[cx-dx-8,sy-25],[cx+dx+8,sy-25],[cx-dx+8,sy-25],[cx+dx-8,sy-25]],[[cx,sy-28],[cx-dx-8,76],[cx+dx+8,76],[cx-dx+8,76],[cx+dx-8,76]]];const index=Math.min(3,Math.floor(v)),t=v===4?1:v-index;return poses[index].map((a,i)=>({id:i===0?'Si-feed':'H'+i,type:i===0?'Si':'H',x:mix(a[0],poses[index+1][i][0],t),y:mix(a[1],poses[index+1][i][1],t)}))}
+const stageNames=['SiH₄ 靠近','断键，同时连接表面','继续脱氢，硅留下','氢结合、脱附','1 Si 留下，2 H₂ 离开'];
+const stageText=['完整硅烷靠近硅表面；此时还没有新表面键。','Si—H 键发生变化，新的表面 Si—Si 键建立。不是把完整硅烷用弱作用粘在膜上。','其余氢逐步脱除，硅并入网络；表面氢暂时存在，仍能逐个追踪。','氢组成 H₂ 后离开；硅原子和它的表面连接留在原处。','净结果：同一个硅留在膜内，四个氢成为两颗 H₂。停留片刻后重播示意。'];
+function changingBond(c,a,b,amount,color){const f=clamp(amount);if(!f)return;const mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};line(c,a.x,a.y,mix(a.x,mid.x,f),mix(a.y,mid.y,f),color,2);line(c,b.x,b.y,mix(b.x,mid.x,f),mix(b.y,mid.y,f),color,2)}
+function micro(){const{c,w,h}=setup('micro'),sy=h-54,step=Math.min(44,w*.13);const host=[-2.5,-1.5,-.5,.5,1.5,2.5].map(x=>({x:w/2+x*step,y:sy}));host.forEach((a,i)=>{if(i)line(c,host[i-1].x,sy,a.x,sy,P.si,1.5);ball(c,a.x,a.y,11,'Si')});text(c,'硅表面 · 只选画部分键',w/2,h-21,'center');
+if(state.binding==='physical'){const a=reactionAtoms(0,w,h),dy=sy-140;a.forEach(p=>p.y+=dy);for(let i=1;i<5;i++)line(c,a[0].x,a[0].y,a[i].x,a[i].y,P.muted,1.5);line(c,w/2,sy-35,w/2,sy-10,P.muted,1,[3,5]);a.forEach(p=>ball(c,p.x,p.y,p.type==='Si'?13:6,p.type));text(c,'完整分子 · 无新化学键',w/2,30,'center');text(c,'这是概念对照，不是成膜步骤',w/2,55,'center');$('[data-reactiontext]').textContent='物理吸附概念：完整分子与表面存在弱相互作用。本例的硅膜生长要发生化学反应，不能停留在这个状态。';canvases.micro.setAttribute('aria-label','物理吸附概念对照，完整硅烷未形成新化学键。');return}
+const v=state.reaction,a=reactionAtoms(v,w,h);const breaks={1:2.08,2:2.25,3:2.42,4:1.05};for(let i=1;i<5;i++)changingBond(c,a[0],a[i],1-(v-breaks[i])/.25,P.h);
+changingBond(c,a[0],host[2],(v-1.05)/.35,P.si);changingBond(c,a[0],host[3],(v-2.2)/.4,P.si);
+if(v>1.45&&v<3)changingBond(c,a[4],host[4],Math.min((v-1.45)/.3,(3-v)/.3),P.h);
+if(v>2.6&&v<3)changingBond(c,a[3],host[1],Math.min((v-2.6)/.2,(3-v)/.2),P.h);
+if(v>2.85){changingBond(c,a[1],a[3],(v-2.85)/.15,P.h);changingBond(c,a[2],a[4],(v-2.85)/.15,P.h)}
+a.forEach(p=>ball(c,p.x,p.y,p.type==='Si'?13:6,p.type));const idx=Math.min(4,Math.floor(v+.00001));text(c,stageNames[idx],w/2,26,'center',P.ink);
+if(v>=3){text(c,'H₂',a[1].x+8,a[1].y-22,'center');text(c,'H₂',a[2].x-8,a[2].y-22,'center')}else if(v>1.1)text(c,'SiHₓ',a[0].x-46,a[0].y-8,'right');
+$('[data-rstage]').textContent=stageNames[idx];if($('[data-reactiontext]').textContent!==stageText[idx])$('[data-reactiontext]').textContent=stageText[idx];canvases.micro.setAttribute('aria-label',stageNames[idx]+'。'+stageText[idx]);}
+function islands(){const{c,w,h}=setup('islands'),base=h-60,g=state.growth;c.fillStyle=P.base;c.fillRect(18,base,w-36,36);text(c,'SiO₂ 基底',w/2,base+19,'center');const sites=[.27,.50,.73],onsets=[.06,.12,.18];sites.forEach((pos,i)=>{const u=clamp((g-onsets[i])/(1-onsets[i]));if(!u)return;const rx=w*.20*u,ry=42*Math.sqrt(u);c.beginPath();c.ellipse(w*pos,base,rx,ry,0,Math.PI,2*Math.PI);c.closePath();c.fillStyle=P.si;c.fill()});text(c,'硅岛截面 · 蓝色区域含许多原子',w/2,24,'center');if(g>.06){for(const pos of sites)arrow(c,w*pos,61,w*pos,96,P.muted,1);text(c,'持续供料',w/2,47,'center')}const idx=g<.06?0:g<.32?1:g<.65?2:g<.84?3:4;const names=['孕育','成核','岛长大','相遇连接','连接成膜'];const explanations=['基底还未被连续硅膜覆盖；孕育期长短取决于表面状态和沉积条件。','几个位置形成可继续长大的硅核。不是所有地方同时铺上一整层。','供料继续，已有岛长大；新材料也可以直接沉积到岛上，不只是从基底迁移过来。','相邻岛开始相遇、连接；连接处的形貌还会继续演化。','蓝色区域已相连，但不等于完全平整、无晶界或没有孔隙。'];$('[data-gstage]').textContent=names[idx];if($('[data-growthtext]').textContent!==explanations[idx])$('[data-growthtext]').textContent=explanations[idx];canvases.islands.setAttribute('aria-label',names[idx]+'。'+explanations[idx]);}
+function concentration(z,ar,da){if(da===0)return 1;const a=Math.sqrt(2*da),b=da/a;return(Math.cosh(a*(ar-z))+b*Math.sinh(a*(ar-z)))/(Math.cosh(a*ar)+b*Math.sinh(a*ar))}
+function trench(){const{c,w,h}=setup('trench'),ar=state.aspect,da=state.da,W=Math.min(74,w*.23),H=ar*W,cx=w/2,L=cx-W/2,R=cx+W/2,Y=65,B=Y+H,t=W*.08;const ratio=z=>concentration(z,ar,da);
+c.fillStyle=P.base;c.beginPath();c.moveTo(18,Y);c.lineTo(L,Y);c.lineTo(L,B);c.lineTo(R,B);c.lineTo(R,Y);c.lineTo(w-18,Y);c.lineTo(w-18,h-30);c.lineTo(18,h-30);c.closePath();c.fill();
+c.fillStyle=P.si;c.fillRect(18,Y-t,L-18,t);c.fillRect(R,Y-t,w-18-R,t);for(const side of [-1,1]){const x=side===-1?L:R;c.beginPath();c.moveTo(x,Y);c.lineTo(x,B);for(let i=80;i>=0;i--){const z=i/80*ar;c.lineTo(x-side*t*ratio(z),Y+z*W)}c.closePath();c.fill()}c.fillRect(L,B-t*ratio(ar),W,t*ratio(ar));
+if(state.reference){c.strokeStyle=P.muted;c.lineWidth=1.5;c.setLineDash([4,4]);c.beginPath();c.moveTo(18,Y-t);c.lineTo(L+t,Y-t);c.lineTo(L+t,B-t);c.lineTo(R-t,B-t);c.lineTo(R-t,Y-t);c.lineTo(w-18,Y-t);c.stroke();c.setLineDash([])}
+line(c,L,38,R,38,P.muted);line(c,L,33,L,43,P.muted);line(c,R,33,R,43,P.muted);text(c,'W',cx,23,'center');const hx=Math.max(35,L-27);line(c,hx,Y,hx,B,P.muted);line(c,hx-4,Y,hx+4,Y,P.muted);line(c,hx-4,B,hx+4,B,P.muted);text(c,'H',hx-9,(Y+B)/2,'right');text(c,'顶部',w-25,Y-22,'right');text(c,'侧壁',Math.min(w-20,R+35),Y+H*.5);text(c,'底部',cx,Math.min(h-12,B+22),'center');text(c,'蓝色：硅膜',20,h-12);text(c,'截面比例 H/W = '+ar.toFixed(1),w-20,h-12,'right');
+for(const [name,v]of Object.entries({top:1,side:ratio(ar/2),bottom:ratio(ar)})){$('[data-bar="'+name+'"]').style.width=(v*100)+'%';$('[data-value="'+name+'"]').textContent=Math.round(v*100)+'%'}$('[data-ar]').textContent=ar.toFixed(1);$('[data-reference]').setAttribute('aria-pressed',String(state.reference));$('[data-reference]').textContent=state.reference?'隐藏均匀覆盖参考':'叠加均匀覆盖参考';$('[data-covertext]').textContent=ratio(ar)>.85?'这个模型下，深处供应仍较充分，底部厚度接近顶部。把消耗调强或把沟槽加深，再看差别。':'上部沿途消耗了反应物，深处供应减少。此时顶部厚，不代表底部和侧壁也同样厚。';canvases.trench.setAttribute('aria-label','深宽比'+ar.toFixed(1)+'，模型底部厚度为顶部的'+Math.round(ratio(ar)*100)+'%。'+(state.reference?'虚线为相同顶部厚度的均匀覆盖参考。':''));}
+function all(){macro();micro();islands();trench()}
+function controlLabels(name){const p=$('[data-play="'+name+'"]');p.textContent=clocks[name].paused?'继续播放':'暂停动画'}
+function syncClock(name){const clock=clocks[name];if(name==='reaction'){state.reaction=Math.min(4,clock.t/3);$('#cvd-reaction').value=state.reaction;micro()}else if(name==='growth'){state.growth=Math.min(1,clock.t/9);$('#cvd-growth').value=state.growth;islands();if(clock.t>10)$('[data-gstage]').textContent='本轮完成 · 即将重播'}else macro()}
+function reset(name){clocks[name].t=0;syncClock(name)}
+$$('[data-demand]').forEach(b=>b.onclick=()=>{state.demand=+b.dataset.demand;$$('[data-demand]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));reset('macro')});
+$$('[data-bind]').forEach(b=>b.onclick=()=>{state.binding=b.dataset.bind;$$('[data-bind]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('[data-reactioncontrols]').hidden=state.binding==='physical';micro()});
+$$('[data-da]').forEach(b=>b.onclick=()=>{state.da=+b.dataset.da;$$('[data-da]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));trench()});$('[data-reference]').onclick=()=>{state.reference=!state.reference;trench()};$('#cvd-aspect').oninput=e=>{state.aspect=+e.target.value;trench()};
+for(const[id,name]of[['cvd-reaction','reaction'],['cvd-growth','growth']])$('#'+id).oninput=e=>{clocks[name].paused=true;clocks[name].t=+e.target.value*(name==='reaction'?3:9);controlLabels(name);syncClock(name)};
+$$('[data-play]').forEach(b=>b.onclick=()=>{const name=b.dataset.play;clocks[name].paused=!clocks[name].paused;controlLabels(name)});$$('[data-reset]').forEach(b=>b.onclick=()=>{const name=b.dataset.reset;clocks[name].paused=false;controlLabels(name);reset(name)});
+const observer=new IntersectionObserver(entries=>{for(const e of entries){const name=e.target.dataset.canvas==='micro'?'reaction':e.target.dataset.canvas==='islands'?'growth':e.target.dataset.canvas;if(clocks[name])clocks[name].visible=e.isIntersecting&&e.intersectionRatio>=.25}},{threshold:[0,.25]});['macro','micro','islands'].forEach(n=>observer.observe(canvases[n]));
+let last=0;function tick(now){const dt=last?Math.min(.1,(now-last)/1000):0;last=now;if(root.isConnected&&!document.hidden){for(const name of Object.keys(clocks)){const clock=clocks[name];if(!clock.visible||clock.paused||(name==='reaction'&&state.binding==='physical'))continue;clock.t=(clock.t+dt)%clock.length;syncClock(name)}}if(root.isConnected)requestAnimationFrame(tick);else observer.disconnect()}
+new ResizeObserver(all).observe(root);all();Object.keys(clocks).forEach(controlLabels);requestAnimationFrame(tick);
+})();
+</script>
+</div>

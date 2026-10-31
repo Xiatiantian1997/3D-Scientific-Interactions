@@ -1,0 +1,121 @@
+{
+  "version": "3.0",
+  "goal": "解释热壁LPCVD炉管各部件如何共同实现供料、加热、低压和排气。",
+  "model": {
+    "assumptions": "水平热壁炉管结构示意；流动标记不是分子；外壳透明度只改变观察，不改变温度；未表示所有阀门与联锁。",
+    "evidence": "MKS LPCVD Systems handbook；University of Michigan LNF LPCVD equipment documentation。"
+  },
+  "states": [
+    {
+      "id": "shell",
+      "meaning": "外层加热炉可见"
+    },
+    {
+      "id": "inside",
+      "meaning": "观察内部晶舟与晶圆"
+    },
+    {
+      "id": "flow",
+      "meaning": "稳态气路示意"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "wafer",
+      "role": "identity",
+      "meaning": "硅晶圆"
+    },
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "heater",
+      "role": "identity",
+      "meaning": "电阻加热区"
+    },
+    {
+      "scope": "all",
+      "channel": "dash motion",
+      "token": "flow",
+      "role": "quantity",
+      "meaning": "气体流向示意，不是分子轨迹"
+    }
+  ],
+  "actions": [
+    {
+      "id": "peel",
+      "kind": "observe",
+      "changes": [
+        "shell opacity"
+      ],
+      "fixed": [
+        "reactor geometry",
+        "gas path",
+        "temperature"
+      ],
+      "feedback": "露出石英管和晶舟"
+    },
+    {
+      "id": "part",
+      "kind": "inspect",
+      "changes": [
+        "selected component"
+      ],
+      "fixed": [
+        "reactor geometry",
+        "gas path"
+      ],
+      "feedback": "突出所选部件并解释作用"
+    },
+    {
+      "id": "pause",
+      "kind": "time",
+      "changes": [
+        "animation running"
+      ],
+      "fixed": [
+        "gas path"
+      ],
+      "feedback": "暂停流向示意"
+    }
+  ],
+  "comparison": {
+    "required": false,
+    "reason": "本任务解释设备结构，外壳透视只属于观察，不是异常或参数比较"
+  },
+  "preserved": [
+    {
+      "feature": "自动动画、手机布局",
+      "status": "retained",
+      "evidence": "自动气流示意与可见暂停入口"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "reviewed",
+      "evidence": "MKS thermal LPCVD apparatus and inlet depletion; observer transparency does not affect process."
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "Flow dashes identified as direction, wafer identity remains stable; electrical feedback uses neutral dotted line."
+    },
+    {
+      "area": "interaction",
+      "status": "tested",
+      "evidence": "Browser clicked pressure part and changed shell slider to 100; labels and rendering updated."
+    },
+    {
+      "area": "layout",
+      "status": "tested",
+      "evidence": "Browser screenshot of 320px container; readable diagram and wrapping controls."
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "Preview iframe verified; Android device not available."
+    }
+  ]
+}
