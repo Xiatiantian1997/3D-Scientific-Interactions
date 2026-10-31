@@ -21,6 +21,8 @@
 
 ## 创作入口
 
+新增 [公开交互方法与三维检查流程](docs/public-methods.md)：按理解困难整理外部参考，区分资料研究、采用建议与尚未完成的实测。
+
 设备与复杂结构优先参考 [结构交互方法](docs/structure-interaction.md)：已记录本次 CVD 实例的有效做法、适用范围和后续必须保留的能力。
 
 1. 阅读 [创作约定](docs/authoring-contract.md)，先写理解目标、模型与基准。
