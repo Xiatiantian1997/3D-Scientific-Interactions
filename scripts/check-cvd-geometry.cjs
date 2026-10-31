@@ -7,7 +7,7 @@ const context=new Proxy({},{get:(t,k)=>t[k]||(()=>{}),set:(t,k,v)=>(t[k]=v,true)
 context.createImageData=(w,h)=>({data:new Uint8ClampedArray(w*h*4)});let output;context.putImageData=img=>output=img.data;
 const els={};function el(s){return els[s]||(els[s]={style:{},clientWidth:320,clientHeight:290,getContext:type=>type==='webgl'?null:context,addEventListener(){},setAttribute(){},value:0,textContent:''})}
 const root={querySelector:el,querySelectorAll:()=>[]};
-let sandbox={document:{getElementById:()=>root,hidden:false},devicePixelRatio:1,matchMedia:()=>({matches:false}),ResizeObserver:class{observe(){}},IntersectionObserver:class{observe(){}},requestAnimationFrame(){}};
+let sandbox={document:{getElementById:()=>root,hidden:false,addEventListener(){}},devicePixelRatio:1,matchMedia:()=>({matches:false}),ResizeObserver:class{observe(){}},IntersectionObserver:class{observe(){}},requestAnimationFrame(){}};
 vm.createContext(sandbox);vm.runInContext(js,sandbox);let maxfaces=0;
 for(let p of [0,.2,.4,.52,.66,.77,1])for(let a of [-Math.PI,-1,0,1,Math.PI]){
  sandbox.test.set(p,a);const f=sandbox.test.model();maxfaces=Math.max(maxfaces,f.length);

@@ -51,7 +51,7 @@
         "component identities",
         "process temperature"
       ],
-      "feedback": "各部件整体分离"
+      "feedback": "按有效可见时间 6 秒展开；低帧率不拖慢时间，离屏暂停；支持中断与反向"
     },
     {
       "id": "camera",
@@ -64,7 +64,7 @@
       "fixed": [
         "model geometry"
       ],
-      "feedback": "重新投影同一结构"
+      "feedback": "抓住可见前表面：向左拖前表面向左，向下拖前表面向下；按钮方向一致"
     },
     {
       "id": "select",
@@ -110,7 +110,7 @@
     {
       "area": "interaction",
       "status": "tested",
-      "evidence": "浏览器展开、反向合拢与旋转；统一进度保持组件关联"
+      "evidence": "真实事件处理器测试四方向前表面跟手与按钮一致；120/60/10/4 fps 均 6 秒完成；隐藏时间排除和暂停通过。浏览器播放启动已检查，真机多指仍待测。"
     },
     {
       "area": "layout",
