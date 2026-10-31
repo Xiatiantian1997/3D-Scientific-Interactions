@@ -10,7 +10,7 @@
 
 | 文件 | 内容 | 状态 |
 |---|---|---|
-| [CVD 三维结构](examples/cvd-structure-3d.html) | 炉壳、石英管、晶舟、端盖的旋转与拆解 | 新增教学结构模型 |
+| [CVD 三维结构](examples/cvd-structure-3d.html) | 炉壳、石英管、晶舟、端盖的旋转与拆解 | 用户认可的结构交互参考 |
 | [CVD 设备总览](examples/cvd-furnace.html) | 进气、加热、控压与抽气关系 | 结构示意 |
 | [CVD 沟槽成膜](examples/cvd-trench-growth.html) | 口部收窄、封口与残留空腔；迁移/再发射区分 | 形貌趋势构造，非配方预测 |
 | [硅烷成膜](examples/silane-cvd-motion.html) | 宏观输运、微观反应、成核与早期覆盖 | 表面机制经过简化 |
@@ -20,6 +20,8 @@
 `archive/` 保留此前版本供回溯，包含用户已指出的问题，不能作为推荐模板照搬。
 
 ## 创作入口
+
+设备与复杂结构优先参考 [结构交互方法](docs/structure-interaction.md)：已记录本次 CVD 实例的有效做法、适用范围和后续必须保留的能力。
 
 1. 阅读 [创作约定](docs/authoring-contract.md)，先写理解目标、模型与基准。
 2. 阅读 [深入检查](docs/deeper-model-review.md)，核实术语、竞争机制与条件随过程改变的反馈。
