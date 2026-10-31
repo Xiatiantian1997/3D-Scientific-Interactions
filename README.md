@@ -54,3 +54,9 @@
 ## 边界
 
 这是可复用的创作方法和教学示例集，不是通用工艺仿真平台。没有启用第三方统计或公开部署。CVD 三维增强显示会按需加载 jsDelivr 上固定版本的 Three.js；失败时保留基础显示。三维设备参考 Anatomy 的表达方法，使用独立实现；见 [结构说明](docs/cvd-structure.md)。现有个人“科学交互”skill 的安装版本未在本次修改，新增规则保存在仓库规范中。
+
+## 模板与下一轮检查
+
+进入 [模板提炼入口](templates/README.md)，查看候选类型、现有参考与逐例检查表；复制 [模板工作稿](templates/authoring-brief.md) 填写一个教学单元。当前完成的是组织与工作入口，HTML 通用模板尚待逐例验证后提炼。
+
+配套仓库：[2D Scientific Interactions](https://github.com/Xiatiantian1997/2d-scientific-interactions)。共同 UI 随后统一处理，本轮不迁移旧示例，不增加新演示。
