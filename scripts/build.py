@@ -14,5 +14,5 @@ for p in (ROOT/'fragments').rglob('*.html'):
  title=TITLES.get(p.stem,p.stem);note='<div class="archive-note">历史试作：保留用于回溯，不作为推荐版本。</div>' if old else ''
  dest.write_text(page(title,'<a class="back" href="../index.html">← 返回目录</a>'+note+p.read_text()))
 links=''.join('<li><a href="examples/'+name+'.html">'+title+'</a></li>' for name,title in TITLES.items())
-ROOT.joinpath('index.html').write_text(page('科学交互','<h1>科学交互</h1><p>先看懂，再操作。独立示例与可复用的创作方法。</p><ul style="line-height:3">'+links+'</ul><p>模型适用范围见各示例说明。源代码与创作规范在仓库中；无需外部依赖。</p>'))
+ROOT.joinpath('index.html').write_text(page('3D Scientific Interactions','<h1>3D Scientific Interactions</h1><p>先看懂，再操作。独立示例与可复用的创作方法。</p><ul style="line-height:3">'+links+'</ul><p>模型适用范围见各示例说明。源代码与创作规范在仓库中；CVD 三维增强显示按需加载 Three.js；无法加载时保留基础显示。</p>'))
 print('Built',len(list((ROOT/'examples').glob('*.html'))),'examples and',len(list((ROOT/'archive').glob('*.html'))),'historical pages')
