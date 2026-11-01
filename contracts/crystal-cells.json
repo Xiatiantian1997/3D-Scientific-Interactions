@@ -1,0 +1,123 @@
+{
+  "version": "3.0",
+  "goal": "在固定视角与尺度下辨认简单立方、体心立方、面心立方和金刚石型常规晶胞。",
+  "model": {
+    "assumptions": "边长归一化；原子等示意半径，不表示堆积率；边界原子完整画出，按顶点1/8、面心1/2、内部1计数。透视投影；最近邻只连接当前晶胞内显示的位置，边界配位不完整。金刚石型是具有基元的晶体结构，不是第四种立方布拉菲点阵。",
+    "evidence": "标准分数坐标：FCC+(1/4,1/4,1/4)基元；内部四位置及等效原子数已通过坐标和共享计数检查。"
+  },
+  "states": [
+    {
+      "id": "sc",
+      "meaning": "简单立方"
+    },
+    {
+      "id": "bcc",
+      "meaning": "体心立方"
+    },
+    {
+      "id": "fcc",
+      "meaning": "面心立方"
+    },
+    {
+      "id": "diamond",
+      "meaning": "金刚石型"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "crystal-cells",
+      "channel": "color",
+      "token": "series-1",
+      "role": "identity",
+      "meaning": "每个结构中的同一种原子；不是缺陷色或共享份额"
+    },
+    {
+      "scope": "crystal-cells",
+      "channel": "line-width",
+      "token": "thin",
+      "role": "observer",
+      "meaning": "晶胞边界"
+    },
+    {
+      "scope": "crystal-cells",
+      "channel": "line-width",
+      "token": "thick",
+      "role": "relation",
+      "meaning": "当前晶胞内最近邻连接；不自动代表各材料同种化学键"
+    }
+  ],
+  "actions": [
+    {
+      "id": "type",
+      "kind": "compare",
+      "changes": [
+        "crystal_structure"
+      ],
+      "fixed": [
+        "camera",
+        "scale",
+        "atomic_radius",
+        "color_meaning"
+      ],
+      "feedback": "原位置切换教学模型，不伪装成晶体转变动画"
+    },
+    {
+      "id": "view",
+      "kind": "observe",
+      "changes": [
+        "camera_orientation",
+        "camera_distance"
+      ],
+      "fixed": [
+        "structure",
+        "coordinates"
+      ],
+      "feedback": "拖动旋转、捏合缩放、短按外侧空白恢复视角；多指或拖动不触发复位"
+    }
+  ],
+  "comparison": {
+    "required": true,
+    "baseline": "sc",
+    "target": "diamond",
+    "action": "type",
+    "fixed": [
+      "camera",
+      "scale"
+    ],
+    "placement": "同一位置与视角切换"
+  },
+  "preserved": [
+    {
+      "feature": "集中控制、空白复位、原位对照",
+      "status": "retained",
+      "evidence": "全部控件位于图下方同一连续区域；复位不改晶胞类型和连接开关"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "tested",
+      "evidence": "四种共享计数1/2/4/8及金刚石内部4近邻检查通过"
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "统一原子色；框线与最近邻关系分开标识"
+    },
+    {
+      "area": "interaction",
+      "status": "reviewed",
+      "evidence": "源码检查状态保留及事件取消；新晶胞交互未做真实设备测试"
+    },
+    {
+      "area": "layout",
+      "status": "reviewed",
+      "evidence": "EGL/GLES渲染四种结构，目视检查FCC和金刚石型；不是完整宿主UI测试"
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "实际手机宿主和触屏性能待验证"
+    }
+  ]
+}
