@@ -1,9 +1,9 @@
 {
   "version": "3.0",
-  "goal": "区分平面投影交叉与三维实际连通，通孔连接不同高度金属线。",
+  "goal": "理解介电层隔离、通孔金属连接、侧壁阻挡衬层及带锥度轮廓的对应关系。",
   "model": {
-    "assumptions": "两条同种金属线位于y=-.55和+.55，中间绝缘材料隐藏。通孔为半径.19的金属圆柱，接触两线内表面。不计算电流，忽略寄生耦合。无/有通孔是结构对照，不是制造过程。",
-    "evidence": "imec官方semi-damascene文章：vias connect subsequent interconnect layers。https://www.imec-int.com/en/articles/imec-demonstrates-semi-damascene-interconnects-fully-self-aligned-vias-18nm-metal-pitch"
+    "assumptions": "简化局部BEOL结构，非特定工艺节点。上下金属线间距H=1，底半径rb=.18，上半径rt=rb+H*tan(theta)，theta=0..12度相对竖直。侧壁阻挡/衬层合并为厚.025的径向层，仅通孔侧壁显示；其他薄层省略。无通孔用完整介电材料填该位置。剖开隐藏z>0的所有材料而非刻蚀。",
+    "evidence": "https://patents.google.com/patent/EP0871213A2/en 图2及侧壁轮廓描述；https://www.appliedmaterials.com/us/en/semiconductor/markets-and-inflections/advanced-logic/interconnect.html 低k介电与阻挡衬层介绍。"
   },
   "states": [
     {
@@ -17,6 +17,18 @@
     {
       "id": "top",
       "meaning": "俯视投影重叠，不改变连接状态"
+    },
+    {
+      "id": "cut",
+      "meaning": "z大于0的材料在观察中隐藏，不是制造切除"
+    },
+    {
+      "id": "whole",
+      "meaning": "完整结构，遮挡内部正常"
+    },
+    {
+      "id": "taper",
+      "meaning": "侧壁倾角改变，固定底径与介电层厚度"
     }
   ],
   "encodings": [
@@ -26,6 +38,20 @@
       "token": "series-1",
       "role": "identity",
       "meaning": "同种金属，包含线与通孔"
+    },
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "series-2",
+      "role": "identity",
+      "meaning": "介电材料"
+    },
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "muted-foreground",
+      "role": "identity",
+      "meaning": "合并示意的侧壁阻挡衬层"
     }
   ],
   "actions": [
@@ -52,7 +78,7 @@
         "wire_positions",
         "via_presence"
       ],
-      "feedback": "拖动或观察角度滑条改变投影，双指缩放"
+      "feedback": "拖动旋转、双指缩放，俯视/斜看为等价点击入口"
     },
     {
       "id": "reset",
@@ -65,6 +91,31 @@
         "via_presence"
       ],
       "feedback": "下方空白复位视角，保留当前有无通孔状态"
+    },
+    {
+      "id": "cutaway",
+      "kind": "observe",
+      "changes": [
+        "visible_region"
+      ],
+      "fixed": [
+        "material_geometry",
+        "via_presence"
+      ],
+      "feedback": "完整与剖开共用同一坐标、材料身份，不移动部件。"
+    },
+    {
+      "id": "taper",
+      "kind": "model",
+      "changes": [
+        "sidewall_angle",
+        "top_radius"
+      ],
+      "fixed": [
+        "bottom_radius",
+        "layer_thickness"
+      ],
+      "feedback": "倾角改变同步孔、填充金属与侧壁衬层，不是物理形变动画。"
     }
   ],
   "comparison": {
@@ -90,27 +141,27 @@
     {
       "area": "model",
       "status": "tested",
-      "evidence": "有无通孔、俯视/斜看/侧看共六态网格坐标有限；通孔半径.19小于线半宽.25，端部恰接上下内表面±.45。"
+      "evidence": "12种组合网格有限；rt=.18+tan(theta),theta=0/9/12；最大外半径.4176小于上层线半宽.45；侧壁衬层与孔内金属共用轮廓，切口z=0。"
     },
     {
       "area": "semantics",
       "status": "reviewed",
-      "evidence": "全部金属同色；绝缘材料明确隐藏；不画电流点、不将有无通孔对照冒充生长动画。"
+      "evidence": "金属、介电、阻挡衬层分色固定；剖开裁掉所有z>0材料；无通孔位置填介电；角度是几何对照，不是制造过程。"
     },
     {
       "area": "interaction",
       "status": "tested",
-      "evidence": "模拟DOM执行结构切换、视角滑条、空白复位保留连接状态、拖动不复位与左拖方向。"
+      "evidence": "模拟DOM执行角度输入、完整剖开、有无通孔、复位保留倾角与结构、拖动保护、左拖方向。真实多指待验。"
     },
     {
       "area": "layout",
       "status": "tested",
-      "evidence": "实际网格通过EGL/GLES渲染六态；查看320px默认斜看后改为更清楚的侧看。完整宿主排版待验。"
+      "evidence": "实际网格GLSL经EGL/GLES渲染12种组合，查看默认剖面、外观和无孔图；修复箱体法线方向。完整宿主中文排版待验。"
     },
     {
       "area": "host",
       "status": "pending",
-      "evidence": "Android真实多指手感、完整宿主布局未验。"
+      "evidence": "Android多指、完整宿主显示尚未实测。"
     }
   ]
 }
