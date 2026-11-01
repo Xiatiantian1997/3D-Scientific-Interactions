@@ -1,0 +1,51 @@
+<section id="via-connection">
+<h3>看着交叉，真的相连吗？</h3>
+<div class="stage"><canvas role="img" aria-label="上下两层交叉金属线，通过视角变化与通孔对照判断连通"></canvas></div>
+<div class="text-small">同色均为金属 · 周围绝缘材料已隐藏</div>
+<div class="operations cursor-interaction">
+<div class="viz-controls"><button class="btn" type="button" data-via="0" aria-pressed="true">无通孔</button><button class="btn" type="button" data-via="1" aria-pressed="false">有通孔</button></div>
+<div data-status aria-live="polite">两条线之间没有直接导电连接</div>
+<label class="form-label">观察角度 <output class="tabular-nums">侧看</output><input class="form-range" data-value type="range" min="0" max="100" value="100"></label>
+<div class="viz-row"><button class="btn" type="button" data-end="0">俯视</button><button class="btn" type="button" data-end="100">侧看</button></div>
+<div class="text-small" data-feedback aria-live="polite">点此区空白复位视角</div>
+</div>
+<span data-color hidden></span><div data-error role="status"></div>
+</section>
+<style>
+#via-connection .stage{height:300px;touch-action:none}#via-connection canvas{display:block;width:100%;height:100%}#via-connection .operations{position:relative;padding:12px 6px 26px;min-height:210px}#via-connection .operations:before{content:"";position:absolute;inset:0;background:var(--foreground);opacity:0;pointer-events:none;transition:opacity 150ms}#via-connection .operations.flash:before{opacity:.065}#via-connection output{float:right}#via-connection [data-feedback]{margin-top:16px}#via-connection [data-status]{min-height:3em;margin:8px 0}#via-connection .form-label{display:block}
+</style>
+<script>
+(()=>{
+const root=document.getElementById('via-connection'),canvas=root.querySelector('canvas'),stage=root.querySelector('.stage'),slider=root.querySelector('[data-value]'),op=root.querySelector('.operations');
+let value=100,via=false,yaw=.52,pitch=Math.PI/2-100/100*1.4,distance=6,animation=0,last=0,colors=[];const pointers=new Map();let previous=null;
+const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
+if(!gl){root.querySelector('[data-error]').textContent='当前环境未启用三维显示。';return;}
+const vertex=`attribute vec3 p;attribute vec3 n;attribute float k;uniform vec2 angle;uniform float aspect;uniform float distance;varying vec3 normal;varying float kind;vec3 rot(vec3 q){float a=angle.x,b=angle.y;vec3 v=vec3(q.x*cos(a)+q.z*sin(a),q.y,-q.x*sin(a)+q.z*cos(a));return vec3(v.x,v.y*cos(b)-v.z*sin(b),v.y*sin(b)+v.z*cos(b));}void main(){vec3 v=rot(p);float z=distance-v.z;gl_Position=vec4(v.x/(.32*aspect),v.y/.32,1.020202*z-.2020202,z);normal=rot(n);kind=k;}`;
+const fragment=`precision mediump float;varying vec3 normal;varying float kind;uniform vec3 c0;uniform vec3 c1;uniform vec3 c2;void main(){vec3 c=kind<.5?c0:(kind<1.5?c1:c2);float light=.82+.18*max(0.,dot(normalize(normal),normalize(vec3(-.4,.8,1.5))));gl_FragColor=vec4(c*light,1.);}`;
+function shader(t,s){let q=gl.createShader(t);gl.shaderSource(q,s);gl.compileShader(q);if(!gl.getShaderParameter(q,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(q));return q;}
+let pr;try{pr=gl.createProgram();gl.attachShader(pr,shader(gl.VERTEX_SHADER,vertex));gl.attachShader(pr,shader(gl.FRAGMENT_SHADER,fragment));gl.linkProgram(pr);if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw Error('link');}catch(e){root.querySelector('[data-error]').textContent='三维显示初始化失败。';return;}
+gl.useProgram(pr);gl.enable(gl.DEPTH_TEST);const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+for(const [name,size,offset] of [['p',3,0],['n',3,12],['k',1,24]]){let l=gl.getAttribLocation(pr,name);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,size,gl.FLOAT,false,28,offset);}
+const u={};for(const k of ['aspect','distance','angle','c0','c1','c2'])u[k]=gl.getUniformLocation(pr,k);
+function color(token){const el=root.querySelector('[data-color]');el.style.color=`var(${token})`;const c=document.createElement('canvas').getContext('2d');c.fillStyle=getComputedStyle(el).color;c.fillRect(0,0,1,1);return [...c.getImageData(0,0,1,1).data].slice(0,3).map(x=>x/255);}
+function theme(){const bg=color('--background');colors=['--muted-foreground','--viz-series-1','--viz-series-2'].map(t=>color(t).map((v,i)=>v*.72+bg[i]*.28));draw();}
+function mesh(){const a=[];function tri(p,q,r,k,n){if(!n){const b=q.map((v,i)=>v-p[i]),c=r.map((v,i)=>v-p[i]);n=[b[1]*c[2]-b[2]*c[1],b[2]*c[0]-b[0]*c[2],b[0]*c[1]-b[1]*c[0]];let d=Math.hypot(...n)||1;n=n.map(v=>v/d);}for(const v of [p,q,r])a.push(...v,...n,k);}
+function box(x0,x1,y0,y1,z0,z1){const p=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]];for(const f of [[0,3,2,1],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]]){tri(p[f[0]],p[f[1]],p[f[2]],1);tri(p[f[0]],p[f[2]],p[f[3]],1);}}
+box(-1.35,1.35,.45,.65,-.25,.25);box(-.25,.25,-.65,-.45,-1.35,1.35);
+if(via){const N=64,r=.19;for(let i=0;i<N;i++){let f=2*Math.PI*i/N,g=2*Math.PI*(i+1)/N;const p=[r*Math.cos(f),-.45,r*Math.sin(f)],q=[r*Math.cos(g),-.45,r*Math.sin(g)],v=[q[0],.45,q[2]],w=[p[0],.45,p[2]];for(const pts of [[p,q,v],[p,v,w]])for(const t of pts)a.push(...t,t[0]/r,0,t[2]/r,1);}}
+return new Float32Array(a);}
+function draw(){const w=stage.clientWidth||320,H=300,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*dpr);canvas.height=H*dpr;gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);let data=mesh();gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);gl.uniform1f(u.aspect,w/H);gl.uniform1f(u.distance,distance);gl.uniform2f(u.angle,yaw,pitch);colors.forEach((c,i)=>gl.uniform3fv(u['c'+i],c));gl.drawArrays(gl.TRIANGLES,0,data.length/7);slider.value=value;root.querySelector('output').textContent=value<1?'俯视':value>99?'侧看':'斜看';root.dataset.value=value;root.dataset.yaw=yaw;root.dataset.via=String(via);root.dataset.vertices=data.length/7;
+root.querySelector('[data-status]').textContent=via?'通孔连接上下两层，金属路径连续':'两条线之间没有直接导电连接';root.querySelectorAll('[data-via]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.via==='1')===via)));}
+
+function stop(){cancelAnimationFrame(animation);animation=0;}
+function set(v){stop();value=v;pitch=Math.PI/2-value/100*1.4;draw();}
+function move(v){stop();const start=value,t0=performance.now();function tick(t){const f=matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-t0)/420);value=start+(v-start)*f*f*(3-2*f);pitch=Math.PI/2-value/100*1.4;draw();if(f<1)animation=requestAnimationFrame(tick);}animation=requestAnimationFrame(tick);}
+function reset(){stop();value=100;yaw=.52;pitch=Math.PI/2-100/100*1.4;distance=6;draw();op.classList.add('flash');root.querySelector('[data-feedback]').textContent='已复位 ✓';clearTimeout(last);last=setTimeout(()=>{op.classList.remove('flash');root.querySelector('[data-feedback]').textContent='点此区空白复位视角';},450);}
+root.querySelectorAll('[data-via]').forEach(b=>b.onclick=()=>{stop();via=b.dataset.via==='1';draw();});slider.oninput=()=>set(+slider.value);root.querySelectorAll('[data-end]').forEach(b=>b.onclick=()=>move(+b.dataset.end));
+function pos(){const p=[...pointers.values()];return p.length===1?{n:1,...p[0]}:p.length>1?{n:2,d:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)}:null;}
+stage.onpointerdown=e=>{if(e.button&&e.pointerType==='mouse')return;stop();pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});stage.setPointerCapture(e.pointerId);previous=pos();};stage.onpointermove=e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const p=pos();if(previous&&previous.n===p.n){if(p.n===1){yaw+=(p.x-previous.x)*.008;pitch=Math.max(.17079632679,Math.min(Math.PI/2,pitch+(p.y-previous.y)*.008));value=(Math.PI/2-pitch)/1.4*100;}else if(p.d>0)distance=Math.max(4.8,Math.min(9,distance*previous.d/p.d));}previous=p;draw();};stage.onpointerup=stage.onpointercancel=stage.onlostpointercapture=e=>{pointers.delete(e.pointerId);previous=pos();};
+let tap=null;const down=new Set();op.addEventListener('pointerdown',e=>{down.add(e.pointerId);tap=down.size===1&&e.isPrimary!==false&&!e.button&&!e.target.closest('button,input,select,a,textarea')?{x:e.clientX,y:e.clientY,t:performance.now(),id:e.pointerId}:null;});op.addEventListener('pointermove',e=>{if(tap&&Math.hypot(e.clientX-tap.x,e.clientY-tap.y)>8)tap=null;});op.addEventListener('pointerup',e=>{const yes=tap&&tap.id===e.pointerId&&performance.now()-tap.t<500;down.delete(e.pointerId);tap=null;if(yes)reset();});for(const event of ['pointercancel','lostpointercapture'])op.addEventListener(event,e=>{down.delete(e.pointerId);tap=null;});window.addEventListener('scroll',()=>tap=null,{passive:true});root.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r'){e.preventDefault();reset();}else if(e.target===slider)return;else if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();yaw+=(e.key==='ArrowRight'?.12:e.key==='ArrowLeft'?-.12:0);pitch=Math.max(.17079632679,Math.min(Math.PI/2,pitch+(e.key==='ArrowDown'?.12:e.key==='ArrowUp'?-.12:0)));value=(Math.PI/2-pitch)/1.4*100;draw();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){stop();pointers.clear();previous=null;tap=null;}});new ResizeObserver(draw).observe(stage);new MutationObserver(theme).observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme']});theme();
+})();
+
+</script>
