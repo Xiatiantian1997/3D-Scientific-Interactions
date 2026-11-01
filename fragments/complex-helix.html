@@ -1,0 +1,36 @@
+<section id="complex-helix">
+<style>
+#complex-helix{color:var(--foreground);padding:8px 0}#complex-helix .scene{display:block;width:100%;height:330px;touch-action:none;cursor:grab}#complex-helix .scene:active{cursor:grabbing}#complex-helix .scene text{font-size:12px;fill:var(--foreground)}#complex-helix .row{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin:12px 0}#complex-helix .label{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px}#complex-helix .legend{display:flex;gap:12px 20px;flex-wrap:wrap;margin:12px 0}#complex-helix .swatch{width:22px;display:inline-block;vertical-align:middle;margin-right:6px;border-top:3px solid var(--viz-series-1)}#complex-helix .sample{border-color:var(--viz-series-2)}
+</style>
+<h3>螺旋图形 ≠ 粒子轨迹</h3>
+<div class="viz-controls"><button class="btn" type="button" data-view="whole" aria-pressed="true">看整体</button><button class="btn" type="button" data-view="axial" aria-pressed="false">沿空间轴看</button></div>
+<svg class="scene" role="img" aria-label="可拖动旋转的复数平面波。三轴是空间位置、实部、虚部。突出箭头始终位于x等于0处，随时间改变方向，不沿空间轴前进。"></svg>
+<div class="legend text-small"><span><i class="swatch"></i>各位置的复数值连线</span><span><i class="swatch sample"></i>固定 x = 0 的值</span></div>
+<div class="text-small" data-readout></div>
+<div class="row"><button type="button" class="btn" data-play>播放</button><div><div class="label"><label for="helix-time">时间（一个周期）</label><output data-time>0.00 T</output></div><input class="form-range" id="helix-time" type="range" min="0" max="1000" value="0"></div></div>
+<div class="text-small">单指旋转 · 双指缩放 · 两个分量轴不是空间方向</div>
+<script>
+(()=>{const root=document.getElementById('complex-helix'),svg=root.querySelector('svg'),range=root.querySelector('input'),play=root.querySelector('[data-play]');const NS='http://www.w3.org/2000/svg';let yaw=-.35,pitch=.55,zoom=1,time=0,running=false,last=0,visible=true,w=360;const pointers=new Map();let pinch=0;
+function add(tag,a,text){const n=document.createElementNS(NS,tag);Object.entries(a||{}).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;svg.append(n);return n;}
+function project(p){let x=Math.cos(yaw)*p[0]+Math.sin(yaw)*p[2],z=-Math.sin(yaw)*p[0]+Math.cos(yaw)*p[2],y=Math.cos(pitch)*p[1]+Math.sin(pitch)*z,d=-Math.sin(pitch)*p[1]+Math.cos(pitch)*z;const scale=Math.min((w-70)/9,55)*zoom;return[w/2+x*scale,160-y*scale,d];}
+function line(a,b,stroke,width=1,dash=''){const p=project(a),q=project(b);add('line',{x1:p[0],y1:p[1],x2:q[0],y2:q[1],stroke,'stroke-width':width,'stroke-dasharray':dash,'stroke-linecap':'round'});}
+function wave(x){const a=2*Math.PI*x/3-2*Math.PI*time;return[x,Math.cos(a),Math.sin(a)];}
+function label(p,text,dx=0,dy=0){const q=project(p);add('text',{x:Math.max(8,Math.min(w-8,q[0]+dx)),y:Math.max(36,Math.min(292,q[1]+dy)),'text-anchor':'middle'},text);}
+function draw(){w=Math.max(280,root.clientWidth);svg.setAttribute('viewBox',`0 0 ${w} 330`);svg.replaceChildren();
+// Orthographic 3D projection. Thin reference ring, never a filled physical plane.
+let circle='';for(let j=0;j<=100;j++){let a=j/100*Math.PI*2,p=project([0,Math.cos(a),Math.sin(a)]);circle+=`${j?'L':'M'}${p[0]} ${p[1]} `;}add('path',{d:circle,fill:'none',stroke:'var(--border)','stroke-width':1,'stroke-dasharray':'3 4'});
+line([-4.3,0,0],[4.3,0,0],'var(--muted-foreground)');line([-4,0,0],[-4,1.55,0],'var(--border)');line([-4,0,0],[-4,0,1.55],'var(--border)');
+const segments=[];for(let j=0;j<300;j++){const a=wave(-4+8*j/300),b=wave(-4+8*(j+1)/300);segments.push({a,b,z:(project(a)[2]+project(b)[2])/2});}segments.sort((a,b)=>a.z-b.z).forEach(s=>line(s.a,s.b,'var(--viz-series-1)',2.4));
+// The sample is anchored at a fixed spatial coordinate, not a moving particle.
+line([0,0,0],wave(0),'var(--viz-series-2)',3.5);const o=project([0,0,0]),tip=project(wave(0)),dx=tip[0]-o[0],dy=tip[1]-o[1],length=Math.hypot(dx,dy);if(length>12){const ux=dx/length,uy=dy/length;add('path',{d:`M${tip[0]-9*ux+4*uy} ${tip[1]-9*uy-4*ux} L${tip[0]} ${tip[1]} L${tip[0]-9*ux-4*uy} ${tip[1]-9*uy+4*ux}`,fill:'none',stroke:'var(--viz-series-2)','stroke-width':2});}add('rect',{x:o[0]-3,y:o[1]-3,width:6,height:6,fill:'var(--foreground)'});add('circle',{cx:tip[0],cy:tip[1],r:4,fill:'var(--viz-series-2)'});
+if(Math.abs(Math.cos(yaw))>.15)label([4.2,0,0],'空间 x',-15,25);label([-4,1.55,0],'实部',0,-12);label([-4,0,1.55],'虚部',-5,18);add('text',{x:w/2,y:23,'text-anchor':'middle'},'空间位置 × 实部 × 虚部');add('text',{x:w/2,y:317,'text-anchor':'middle'},'方块：固定位置 x = 0');add('line',{x1:o[0],y1:o[1]+8,x2:w/2,y2:300,stroke:'var(--border)','stroke-dasharray':'3 4'});
+const v=wave(0),fmt=n=>(Math.abs(n)<.0005?0:n).toFixed(2);root.querySelector('[data-readout]').textContent=`x = 0：实部 ${fmt(v[1])}，虚部 ${fmt(v[2])}；模长 1`;range.value=String(Math.round(time*1000));root.querySelector('[data-time]').textContent=time.toFixed(2)+' T';play.textContent=running?'暂停':time>=1?'重播':'播放';root.dataset.time=time;root.dataset.yaw=yaw;root.dataset.pitch=pitch;root.dataset.running=running;}
+function unselect(){root.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed','false'));}
+root.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{yaw=b.dataset.view==='axial'?Math.PI/2:-.35;pitch=b.dataset.view==='axial'?0:.55;zoom=b.dataset.view==='axial'?2.1:1;root.querySelectorAll('[data-view]').forEach(c=>c.setAttribute('aria-pressed',String(c===b)));draw();});
+range.oninput=()=>{running=false;last=0;time=+range.value/1000;draw();};play.onclick=()=>{if(time>=1)time=0;running=!running;last=0;draw();};
+svg.onpointerdown=e=>{pointers.set(e.pointerId,[e.clientX,e.clientY]);svg.setPointerCapture(e.pointerId);if(pointers.size===2){const a=[...pointers.values()];pinch=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);}};
+svg.onpointermove=e=>{if(!pointers.has(e.pointerId))return;const old=pointers.get(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===1){yaw+=(e.clientX-old[0])*.008;pitch=Math.max(-1.25,Math.min(1.25,pitch-(e.clientY-old[1])*.008));}else{const a=[...pointers.values()],d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);if(pinch>0)zoom=Math.max(.65,Math.min(2.5,zoom*d/pinch));pinch=d;}unselect();draw();};const end=e=>{pointers.delete(e.pointerId);pinch=0;};svg.onpointerup=end;svg.onpointercancel=end;svg.onlostpointercapture=end;
+new ResizeObserver(draw).observe(root);new IntersectionObserver(es=>{visible=es[0].isIntersecting;last=0;}).observe(root);document.addEventListener('visibilitychange',()=>last=0);function frame(t){if(running&&visible&&!document.hidden){if(last){time=Math.min(1,time+(t-last)/6500);if(time>=1)running=false;draw();}last=t;}else last=0;requestAnimationFrame(frame);}draw();requestAnimationFrame(frame);
+})();
+</script>
+</section>
