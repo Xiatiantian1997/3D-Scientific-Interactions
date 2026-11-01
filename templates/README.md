@@ -54,3 +54,9 @@ CVD 的基础显示与部分几何、时序已有检查记录；增强 GPU 渲�
 验证：12种完整/剖开、有/无、0/9/12°组合生成并渲染；模拟DOM检查输入、对照、复位与拖动。Android多指与宿主整体布局待验。详细来源与简化说明见[研究记录](../docs/via-structure.md)，语义及证据见contracts/via-connection.json。
 
 后续3D按用户要求一次一个，先保留解释关系所必需的环境和界面，避免以简洁为由删去关键材料。
+
+## 框架3.1采用边界
+
+候选类型作为参考索引，不构成硬性清单。允许旋转、爆炸、剖切、切片、隔离、局部放大、场与过程按教学目标组合；一次选最少足够方式。新模型可扩展，记录现有方法的缺口与验证。详见[开放创作规则](../docs/platform-policy.md)。
+
+通用片段打包与主题接口由[2D接入层](https://github.com/Xiatiantian1997/2d-scientific-interactions/blob/main/docs/host-integration.md)提供。隔离同页不等于物理耦合；WebGL旧例材质需独立适配，Android和Notion宿主仍需真实验收。
