@@ -1,23 +1,24 @@
-<section id="via-connection">
-<h3>看着交叉，真的相连吗？</h3>
-<div class="stage"><canvas role="img" aria-label="上下两层交叉金属线，通过视角变化与通孔对照判断连通"></canvas></div>
-<div class="text-small">同色均为金属 · 周围绝缘材料已隐藏</div>
+<section id="via-dielectric">
+<h3>通孔 · 穿过介电层的连接</h3>
+<div class="stage"><canvas role="img" aria-label="介电材料包围金属线与带锥度通孔，剖开显示侧壁衬层"></canvas></div>
+<div class="viz-row text-small"><span style="color:var(--viz-series-1)">● 金属线／填充金属</span><span style="color:var(--viz-series-2)">● 介电层</span><span>● 侧壁阻挡／衬层</span></div>
 <div class="operations cursor-interaction">
-<div class="viz-controls"><button class="btn" type="button" data-via="0" aria-pressed="true">无通孔</button><button class="btn" type="button" data-via="1" aria-pressed="false">有通孔</button></div>
-<div data-status aria-live="polite">两条线之间没有直接导电连接</div>
-<label class="form-label">观察角度 <output class="tabular-nums">侧看</output><input class="form-range" data-value type="range" min="0" max="100" value="100"></label>
-<div class="viz-row"><button class="btn" type="button" data-end="0">俯视</button><button class="btn" type="button" data-end="100">侧看</button></div>
+<div class="viz-controls"><button class="btn" type="button" data-via="0">无通孔</button><button class="btn" type="button" data-via="1" aria-pressed="true">有通孔</button><label class="form-check"><input class="form-check-input" type="checkbox" data-cut checked><span class="form-check-label">剖开观察</span></label></div>
+<div data-status aria-live="polite"></div>
+<label class="form-label">侧壁倾角 · 相对竖直 <output class="tabular-nums">9°</output><input class="form-range" data-value type="range" min="0" max="12" step=".5" value="9"></label>
+<div class="text-small" data-ratio></div>
+<div class="viz-row"><button class="btn" type="button" data-view="top">俯视</button><button class="btn" type="button" data-view="angle">斜看</button></div>
 <div class="text-small" data-feedback aria-live="polite">点此区空白复位视角</div>
 </div>
 <span data-color hidden></span><div data-error role="status"></div>
 </section>
 <style>
-#via-connection .stage{height:300px;touch-action:none}#via-connection canvas{display:block;width:100%;height:100%}#via-connection .operations{position:relative;padding:12px 6px 26px;min-height:210px}#via-connection .operations:before{content:"";position:absolute;inset:0;background:var(--foreground);opacity:0;pointer-events:none;transition:opacity 150ms}#via-connection .operations.flash:before{opacity:.065}#via-connection output{float:right}#via-connection [data-feedback]{margin-top:16px}#via-connection [data-status]{min-height:3em;margin:8px 0}#via-connection .form-label{display:block}
+#via-dielectric .stage{height:340px;touch-action:none}#via-dielectric canvas{display:block;width:100%;height:100%}#via-dielectric .operations{position:relative;padding:12px 6px 26px;min-height:230px}#via-dielectric .operations:before{content:"";position:absolute;inset:0;background:var(--foreground);opacity:0;pointer-events:none;transition:opacity 150ms}#via-dielectric .operations.flash:before{opacity:.065}#via-dielectric output{float:right}#via-dielectric [data-feedback]{margin-top:16px}#via-dielectric [data-status]{min-height:3em;margin:8px 0}#via-dielectric [data-ratio]{min-height:2em;margin-bottom:10px}#via-dielectric .form-label{display:block}
 </style>
 <script>
 (()=>{
-const root=document.getElementById('via-connection'),canvas=root.querySelector('canvas'),stage=root.querySelector('.stage'),slider=root.querySelector('[data-value]'),op=root.querySelector('.operations');
-let value=100,via=false,yaw=.52,pitch=Math.PI/2-100/100*1.4,distance=6,animation=0,last=0,colors=[];const pointers=new Map();let previous=null;
+const root=document.getElementById('via-dielectric'),canvas=root.querySelector('canvas'),stage=root.querySelector('.stage'),slider=root.querySelector('[data-value]'),op=root.querySelector('.operations');
+let value=9,via=true,yaw=.28,pitch=.32,distance=6,animation=0,last=0,colors=[];const pointers=new Map();let previous=null;
 const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
 if(!gl){root.querySelector('[data-error]').textContent='当前环境未启用三维显示。';return;}
 const vertex=`attribute vec3 p;attribute vec3 n;attribute float k;uniform vec2 angle;uniform float aspect;uniform float distance;varying vec3 normal;varying float kind;vec3 rot(vec3 q){float a=angle.x,b=angle.y;vec3 v=vec3(q.x*cos(a)+q.z*sin(a),q.y,-q.x*sin(a)+q.z*cos(a));return vec3(v.x,v.y*cos(b)-v.z*sin(b),v.y*sin(b)+v.z*cos(b));}void main(){vec3 v=rot(p);float z=distance-v.z;gl_Position=vec4(v.x/(.32*aspect),v.y/.32,1.020202*z-.2020202,z);normal=rot(n);kind=k;}`;
@@ -29,22 +30,42 @@ for(const [name,size,offset] of [['p',3,0],['n',3,12],['k',1,24]]){let l=gl.getA
 const u={};for(const k of ['aspect','distance','angle','c0','c1','c2'])u[k]=gl.getUniformLocation(pr,k);
 function color(token){const el=root.querySelector('[data-color]');el.style.color=`var(${token})`;const c=document.createElement('canvas').getContext('2d');c.fillStyle=getComputedStyle(el).color;c.fillRect(0,0,1,1);return [...c.getImageData(0,0,1,1).data].slice(0,3).map(x=>x/255);}
 function theme(){const bg=color('--background');colors=['--muted-foreground','--viz-series-1','--viz-series-2'].map(t=>color(t).map((v,i)=>v*.72+bg[i]*.28));draw();}
-function mesh(){const a=[];function tri(p,q,r,k,n){if(!n){const b=q.map((v,i)=>v-p[i]),c=r.map((v,i)=>v-p[i]);n=[b[1]*c[2]-b[2]*c[1],b[2]*c[0]-b[0]*c[2],b[0]*c[1]-b[1]*c[0]];let d=Math.hypot(...n)||1;n=n.map(v=>v/d);}for(const v of [p,q,r])a.push(...v,...n,k);}
-function box(x0,x1,y0,y1,z0,z1){const p=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]];for(const f of [[0,3,2,1],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]]){tri(p[f[0]],p[f[1]],p[f[2]],1);tri(p[f[0]],p[f[2]],p[f[3]],1);}}
-box(-1.35,1.35,.45,.65,-.25,.25);box(-.25,.25,-.65,-.45,-1.35,1.35);
-if(via){const N=64,r=.19;for(let i=0;i<N;i++){let f=2*Math.PI*i/N,g=2*Math.PI*(i+1)/N;const p=[r*Math.cos(f),-.45,r*Math.sin(f)],q=[r*Math.cos(g),-.45,r*Math.sin(g)],v=[q[0],.45,q[2]],w=[p[0],.45,p[2]];for(const pts of [[p,q,v],[p,v,w]])for(const t of pts)a.push(...t,t[0]/r,0,t[2]/r,1);}}
+function mesh(){const a=[],cut=root.querySelector('[data-cut]').checked,rb=.18,rt=rb+Math.tan(value*Math.PI/180),coat=.025;
+function tri(p,q,r,k,n){if(!n){const b=q.map((v,i)=>v-p[i]),c=r.map((v,i)=>v-p[i]);n=[b[1]*c[2]-b[2]*c[1],b[2]*c[0]-b[0]*c[2],b[0]*c[1]-b[1]*c[0]];let d=Math.hypot(...n)||1;n=n.map(v=>v/d);}for(const v of [p,q,r])a.push(...v,...n,k);}
+function quad(p,q,r,s,k,n){tri(p,q,r,k,n);tri(p,r,s,k,n);}
+function box(x0,x1,y0,y1,z0,z1,k){if(cut)z1=Math.min(z1,0);if(z1<=z0)return;const p=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]];for(const f of [[0,3,2,1],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]])quad(...f.slice().reverse().map(i=>p[i]),k);}
+// Metal lines embedded in dielectric; one local block, not a full process flow.
+box(-1.2,1.2,.5,.74,-.45,.45,1);box(-.45,.45,-.74,-.5,-1.2,1.2,1);
+box(-1.2,1.2,.5,.74,-1.2,-.45,2);box(-1.2,1.2,.5,.74,.45,1.2,2);
+box(-1.2,-.45,-.74,-.5,-1.2,1.2,2);box(.45,1.2,-.74,-.5,-1.2,1.2,2);
+box(-1.2,1.2,-.86,-.74,-1.2,1.2,2);
+function ring(b0,t0,b1,t1,k,square){const N=cut?64:128,start=cut?Math.PI:0;
+function point(r,y,f){return [r*Math.cos(f),y,r*Math.sin(f)];}
+function outer(r,f){return square?1.2/Math.max(Math.abs(Math.cos(f)),Math.abs(Math.sin(f))):r;}
+for(let i=0;i<N;i++){const f=start+(cut?Math.PI:2*Math.PI)*i/N,g=start+(cut?Math.PI:2*Math.PI)*(i+1)/N;
+const bf=point(b0,-.5,f),bg=point(b0,-.5,g),tf=point(t0,.5,f),tg=point(t0,.5,g),BF=point(outer(b1,f),-.5,f),BG=point(outer(b1,g),-.5,g),TF=point(outer(t1,f),.5,f),TG=point(outer(t1,g),.5,g);
+quad(tf,tg,TG,TF,k,[0,1,0]);quad(bf,BF,BG,bg,k,[0,-1,0]);
+if(!square){const slope=t1-b1;for(const pts of [[BF,BG,TG],[BF,TG,TF]])for(const v of pts){let rr=Math.hypot(v[0],v[2]),n=[v[0]/rr,-slope,v[2]/rr],d=Math.hypot(...n);a.push(...v,...n.map(x=>x/d),k);}}
+else quad(BF,TF,TG,BG,k);
+// Shared buried interfaces need not be drawn; cut faces expose adjoining layers.
+}
+if(cut)for(const f of [Math.PI,2*Math.PI]){quad(point(b0,-.5,f),point(t0,.5,f),point(outer(t1,f),.5,f),point(outer(b1,f),-.5,f),k,[0,0,1]);}
+}
+if(via){ring(0,0,rb,rt,1,false);ring(rb,rt,rb+coat,rt+coat,0,false);ring(rb+coat,rt+coat,1.2,1.2,2,true);}
+else box(-1.2,1.2,-.5,.5,-1.2,1.2,2);
 return new Float32Array(a);}
-function draw(){const w=stage.clientWidth||320,H=300,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*dpr);canvas.height=H*dpr;gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);let data=mesh();gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);gl.uniform1f(u.aspect,w/H);gl.uniform1f(u.distance,distance);gl.uniform2f(u.angle,yaw,pitch);colors.forEach((c,i)=>gl.uniform3fv(u['c'+i],c));gl.drawArrays(gl.TRIANGLES,0,data.length/7);slider.value=value;root.querySelector('output').textContent=value<1?'俯视':value>99?'侧看':'斜看';root.dataset.value=value;root.dataset.yaw=yaw;root.dataset.via=String(via);root.dataset.vertices=data.length/7;
-root.querySelector('[data-status]').textContent=via?'通孔连接上下两层，金属路径连续':'两条线之间没有直接导电连接';root.querySelectorAll('[data-via]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.via==='1')===via)));}
+
+function draw(){const w=stage.clientWidth||320,H=340,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*dpr);canvas.height=H*dpr;gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);let data=mesh();gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);gl.uniform1f(u.aspect,w/H);gl.uniform1f(u.distance,distance);gl.uniform2f(u.angle,yaw,pitch);colors.forEach((c,i)=>gl.uniform3fv(u['c'+i],c));gl.drawArrays(gl.TRIANGLES,0,data.length/7);slider.value=value;root.querySelector('output').textContent=value.toFixed(1)+'°';root.querySelector('[data-ratio]').textContent=via?'上口／下口直径比 '+((.18+Math.tan(value*Math.PI/180))/.18).toFixed(2)+' · 固定底径与层厚':'无通孔：原位置为连续介电材料';slider.disabled=!via;root.dataset.value=value;root.dataset.yaw=yaw;root.dataset.via=String(via);root.dataset.vertices=data.length/7;
+root.querySelector('[data-status]').textContent=(root.querySelector('[data-cut]').checked?'剖开显示内部；':'完整外观；')+(via?'金属填充穿过介电层':'介电层隔开两条金属线');root.querySelectorAll('[data-via]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.via==='1')===via)));}
 
 function stop(){cancelAnimationFrame(animation);animation=0;}
-function set(v){stop();value=v;pitch=Math.PI/2-value/100*1.4;draw();}
-function move(v){stop();const start=value,t0=performance.now();function tick(t){const f=matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-t0)/420);value=start+(v-start)*f*f*(3-2*f);pitch=Math.PI/2-value/100*1.4;draw();if(f<1)animation=requestAnimationFrame(tick);}animation=requestAnimationFrame(tick);}
-function reset(){stop();value=100;yaw=.52;pitch=Math.PI/2-100/100*1.4;distance=6;draw();op.classList.add('flash');root.querySelector('[data-feedback]').textContent='已复位 ✓';clearTimeout(last);last=setTimeout(()=>{op.classList.remove('flash');root.querySelector('[data-feedback]').textContent='点此区空白复位视角';},450);}
-root.querySelectorAll('[data-via]').forEach(b=>b.onclick=()=>{stop();via=b.dataset.via==='1';draw();});slider.oninput=()=>set(+slider.value);root.querySelectorAll('[data-end]').forEach(b=>b.onclick=()=>move(+b.dataset.end));
+function set(v){stop();value=v;draw();}
+function moveView(top){stop();const start=pitch,startY=yaw,end=top?Math.PI/2:.32,endY=top?0:.28,t0=performance.now();function tick(t){const f=matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-t0)/320),e=f*f*(3-2*f);pitch=start+(end-start)*e;yaw=startY+(endY-startY)*e;draw();if(f<1)animation=requestAnimationFrame(tick);}animation=requestAnimationFrame(tick);}
+function reset(){stop();yaw=.28;pitch=.32;distance=6;draw();op.classList.add('flash');root.querySelector('[data-feedback]').textContent='已复位 ✓';clearTimeout(last);last=setTimeout(()=>{op.classList.remove('flash');root.querySelector('[data-feedback]').textContent='点此区空白复位视角';},450);}
+root.querySelectorAll('[data-via]').forEach(b=>b.onclick=()=>{stop();via=b.dataset.via==='1';draw();});slider.oninput=()=>set(+slider.value);root.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>moveView(b.dataset.view==='top'));root.querySelector('[data-cut]').onchange=()=>{stop();draw();};
 function pos(){const p=[...pointers.values()];return p.length===1?{n:1,...p[0]}:p.length>1?{n:2,d:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)}:null;}
-stage.onpointerdown=e=>{if(e.button&&e.pointerType==='mouse')return;stop();pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});stage.setPointerCapture(e.pointerId);previous=pos();};stage.onpointermove=e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const p=pos();if(previous&&previous.n===p.n){if(p.n===1){yaw+=(p.x-previous.x)*.008;pitch=Math.max(.17079632679,Math.min(Math.PI/2,pitch+(p.y-previous.y)*.008));value=(Math.PI/2-pitch)/1.4*100;}else if(p.d>0)distance=Math.max(4.8,Math.min(9,distance*previous.d/p.d));}previous=p;draw();};stage.onpointerup=stage.onpointercancel=stage.onlostpointercapture=e=>{pointers.delete(e.pointerId);previous=pos();};
-let tap=null;const down=new Set();op.addEventListener('pointerdown',e=>{down.add(e.pointerId);tap=down.size===1&&e.isPrimary!==false&&!e.button&&!e.target.closest('button,input,select,a,textarea')?{x:e.clientX,y:e.clientY,t:performance.now(),id:e.pointerId}:null;});op.addEventListener('pointermove',e=>{if(tap&&Math.hypot(e.clientX-tap.x,e.clientY-tap.y)>8)tap=null;});op.addEventListener('pointerup',e=>{const yes=tap&&tap.id===e.pointerId&&performance.now()-tap.t<500;down.delete(e.pointerId);tap=null;if(yes)reset();});for(const event of ['pointercancel','lostpointercapture'])op.addEventListener(event,e=>{down.delete(e.pointerId);tap=null;});window.addEventListener('scroll',()=>tap=null,{passive:true});root.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r'){e.preventDefault();reset();}else if(e.target===slider)return;else if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();yaw+=(e.key==='ArrowRight'?.12:e.key==='ArrowLeft'?-.12:0);pitch=Math.max(.17079632679,Math.min(Math.PI/2,pitch+(e.key==='ArrowDown'?.12:e.key==='ArrowUp'?-.12:0)));value=(Math.PI/2-pitch)/1.4*100;draw();}});
+stage.onpointerdown=e=>{if(e.button&&e.pointerType==='mouse')return;stop();pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});stage.setPointerCapture(e.pointerId);previous=pos();};stage.onpointermove=e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const p=pos();if(previous&&previous.n===p.n){if(p.n===1){yaw+=(p.x-previous.x)*.008;pitch=Math.max(-1.35,Math.min(Math.PI/2,pitch+(p.y-previous.y)*.008));}else if(p.d>0)distance=Math.max(5.3,Math.min(9,distance*previous.d/p.d));}previous=p;draw();};stage.onpointerup=stage.onpointercancel=stage.onlostpointercapture=e=>{pointers.delete(e.pointerId);previous=pos();};
+let tap=null;const down=new Set();op.addEventListener('pointerdown',e=>{down.add(e.pointerId);tap=down.size===1&&e.isPrimary!==false&&!e.button&&!e.target.closest('button,input,select,a,textarea')?{x:e.clientX,y:e.clientY,t:performance.now(),id:e.pointerId}:null;});op.addEventListener('pointermove',e=>{if(tap&&Math.hypot(e.clientX-tap.x,e.clientY-tap.y)>8)tap=null;});op.addEventListener('pointerup',e=>{const yes=tap&&tap.id===e.pointerId&&performance.now()-tap.t<500;down.delete(e.pointerId);tap=null;if(yes)reset();});for(const event of ['pointercancel','lostpointercapture'])op.addEventListener(event,e=>{down.delete(e.pointerId);tap=null;});window.addEventListener('scroll',()=>tap=null,{passive:true});root.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r'){e.preventDefault();reset();}else if(e.target===slider)return;else if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();yaw+=(e.key==='ArrowRight'?.12:e.key==='ArrowLeft'?-.12:0);pitch=Math.max(-1.35,Math.min(Math.PI/2,pitch+(e.key==='ArrowDown'?.12:e.key==='ArrowUp'?-.12:0)));draw();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stop();pointers.clear();previous=null;tap=null;}});new ResizeObserver(draw).observe(stage);new MutationObserver(theme).observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme']});theme();
 })();
 
