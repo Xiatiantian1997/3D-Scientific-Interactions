@@ -37,3 +37,8 @@
 - 本次查看 Purdue Unit Cells 原文及 13_17.gif 图：借鉴空间位置和共享计数分开解释；不照搬旧材质与配色。来源：https://chemed.chem.purdue.edu/genchem/topicreview/bp/ch13/unitcell.php 。ChemTube3D 页面返回403，未体验其交互。
 - 当前晶胞比较删去全部最近邻连线；只保留同规格边界线。可开关的单个淡面明确表示晶胞边界参考，不表示化学键、薄膜或缺陷。不同含义的线若不必要，应删去其中一类，不能为了统一粗细而混淆含义。
 - 播放、暂停采用同一图标库、相同占位的符号按钮，并提供动态可访问名称。图标状态变化不得改变布局。
+
+
+## 金刚石型补充
+
+连线按教学任务取舍，不能把删线概括为所有结构的统一规则。金刚石型的四面体成键网络需要连接关系，默认显示晶胞内最近邻键，允许隐藏；SC/BCC/FCC位置比较不增加邻接线。开关在其他类型禁用而不删除，避免布局跳动。参考 Open University 图16及说明：https://www.open.edu/openlearn/science-maths-technology/an-introduction-minerals-and-rocks-under-the-microscope/content-section-1.4.3 。本次读取了教学正文和图注，未声称体验其交互。整体UI暂保留，后续统一打磨。
