@@ -1,0 +1,139 @@
+{
+  "version": "3.0",
+  "goal": "辨认CsCl、NaCl、闪锌矿ZnS中两种组分的位置与配位差别。",
+  "model": {
+    "assumptions": "边长和球半径统一用于位置比较，不表示真实尺寸；不同类型是不同材料，不是相变动画。颜色分别表示非金属组分与金属组分，不表示缺陷或成键纯离子性。只画单个常规晶胞，边界配位不完整。",
+    "evidence": "Purdue Unit Cells: https://chemed.chem.purdue.edu/genchem/topicreview/bp/ch13/unitcell.php 中CsCl、NaCl、ZnS分数坐标。"
+  },
+  "states": [
+    {
+      "id": "cscl",
+      "meaning": "氯化铯"
+    },
+    {
+      "id": "nacl",
+      "meaning": "氯化钠"
+    },
+    {
+      "id": "zns",
+      "meaning": "闪锌矿硫化锌"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "compound-cells",
+      "channel": "color",
+      "token": "series-1",
+      "role": "identity",
+      "meaning": "非金属组分Cl或S，确切元素见同步图例"
+    },
+    {
+      "scope": "compound-cells",
+      "channel": "color",
+      "token": "series-2",
+      "role": "identity",
+      "meaning": "金属组分Cs、Na或Zn，确切元素见同步图例"
+    },
+    {
+      "scope": "compound-cells",
+      "channel": "line",
+      "token": "frame",
+      "role": "observer",
+      "meaning": "常规晶胞边界"
+    },
+    {
+      "scope": "compound-cells",
+      "channel": "line",
+      "token": "internal",
+      "role": "relation",
+      "meaning": "ZnS最近邻Zn—S连接"
+    }
+  ],
+  "actions": [
+    {
+      "id": "type",
+      "kind": "compare",
+      "changes": [
+        "crystal_structure"
+      ],
+      "fixed": [
+        "camera",
+        "scale",
+        "atomic_radius",
+        "color_meaning"
+      ],
+      "feedback": "原位置切换教学模型，不伪装成晶体转变动画"
+    },
+    {
+      "id": "view",
+      "kind": "observe",
+      "changes": [
+        "camera_orientation",
+        "camera_distance"
+      ],
+      "fixed": [
+        "structure",
+        "coordinates"
+      ],
+      "feedback": "拖动旋转、捏合缩放、短按外侧空白恢复视角；多指或拖动不触发复位"
+    },
+    {
+      "id": "overlays",
+      "kind": "observe",
+      "changes": [
+        "boundary_face_visibility",
+        "bond_visibility"
+      ],
+      "fixed": [
+        "atom_positions",
+        "composition"
+      ],
+      "feedback": "开关仅改变辅助表示；ZnS成键线可隐藏"
+    }
+  ],
+  "comparison": {
+    "required": true,
+    "baseline": "cscl",
+    "target": "zns",
+    "action": "type",
+    "fixed": [
+      "camera",
+      "scale"
+    ],
+    "placement": "同一位置与视角切换"
+  },
+  "preserved": [
+    {
+      "feature": "集中控制、空白复位、原位对照",
+      "status": "retained",
+      "evidence": "全部控件位于图下方同一连续区域；复位不改晶胞类型和连接开关"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "tested",
+      "evidence": "坐标共享计数CsCl 1:1、NaCl 4:4、ZnS 4:4；内部中心配位8/6/4断言通过。"
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "两色仅标识金属/非金属组分；图例随材料更新，不表示缺陷；ZnS连线不声称纯离子键。"
+    },
+    {
+      "area": "interaction",
+      "status": "reviewed",
+      "evidence": "沿用触摸手势；源码检查换类型保留视角、缩放、开关偏好，取消未完成复位；JS语法通过。"
+    },
+    {
+      "area": "layout",
+      "status": "tested",
+      "evidence": "三个结构均用EGL/GLES实际渲染并检查遮挡；不是浏览器完整布局测试。"
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "手机/平板宿主触屏与完整布局尚未实测。"
+    }
+  ]
+}
