@@ -2,7 +2,7 @@
   "version": "3.0",
   "goal": "在固定视角与尺度下辨认简单立方、体心立方、面心立方和金刚石型常规晶胞。",
   "model": {
-    "assumptions": "边长归一化；原子等示意半径，不表示堆积率；边界原子完整画出，按顶点1/8、面心1/2、内部1计数。透视投影；不显示最近邻关系，仅显示原子位置及晶胞边界。金刚石型是具有基元的晶体结构，不是第四种立方布拉菲点阵。",
+    "assumptions": "边长归一化；原子等示意半径，不表示堆积率；边界原子完整画出，按顶点1/8、面心1/2、内部1计数。透视投影；仅金刚石型显示当前晶胞内最近邻键；边界原子连接在相邻晶胞继续，不能用本图截断后的线数判断完整配位数。金刚石型是具有基元的晶体结构，不是第四种立方布拉菲点阵。",
     "evidence": "标准分数坐标：FCC+(1/4,1/4,1/4)基元；内部四位置及等效原子数已通过坐标和共享计数检查。"
   },
   "states": [
@@ -44,6 +44,13 @@
       "token": "single-face",
       "role": "observer",
       "meaning": "可关闭的单个晶胞边界参考面，非材料膜层"
+    },
+    {
+      "scope": "crystal-cells-bonds",
+      "channel": "line",
+      "token": "diamond-bonds",
+      "role": "relation",
+      "meaning": "仅金刚石型内显示的最近邻成键关系；默认开启，可关闭"
     }
   ],
   "actions": [
@@ -73,6 +80,19 @@
         "coordinates"
       ],
       "feedback": "拖动旋转、捏合缩放、短按外侧空白恢复视角；多指或拖动不触发复位"
+    },
+    {
+      "id": "diamond-bonds",
+      "kind": "observe",
+      "changes": [
+        "bond_visibility"
+      ],
+      "fixed": [
+        "atomic_positions",
+        "camera",
+        "cell_type"
+      ],
+      "feedback": "默认开启，关闭只隐藏线；切换类型保留开关偏好，其他类型禁用并保持控件占位"
     }
   ],
   "comparison": {
@@ -102,7 +122,7 @@
     {
       "area": "semantics",
       "status": "reviewed",
-      "evidence": "删去最近邻连线与开关，仅保留边框和可选的单个边界参考面；播放采用同规格Lucide图标。"
+      "evidence": "仅为金刚石型恢复最近邻键，其他类型仍仅显示边界；开关不移动原子。"
     },
     {
       "area": "interaction",
