@@ -1,0 +1,129 @@
+{
+  "version": "3.0",
+  "goal": "区分沿位置排列的复数值形成螺旋图形与粒子螺旋轨迹，观察固定位置的相位变化。",
+  "model": {
+    "assumptions": "ψ=exp[i(kx−2πt/T)]，幅度1，波长3个示意长度单位；有限视窗截取无限平面波。坐标为x、Reψ、Imψ，后两者不是空间方向。",
+    "evidence": "欧拉公式及恒相位条件kx−ωt=常数；归一化幅度只作示意，不是可归一化单粒子波包。"
+  },
+  "states": [
+    {
+      "id": "oblique",
+      "meaning": "空间x与两个复数分量组成的斜视图"
+    },
+    {
+      "id": "axial",
+      "meaning": "沿x轴看复数平面"
+    },
+    {
+      "id": "playing",
+      "meaning": "时间前进一周期；固定位置不变"
+    },
+    {
+      "id": "paused",
+      "meaning": "固定时刻旋转观察"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "helix",
+      "channel": "stroke",
+      "token": "series1",
+      "role": "quantity",
+      "meaning": "同一时刻各位置的复数值连线"
+    },
+    {
+      "scope": "helix",
+      "channel": "stroke",
+      "token": "series2",
+      "role": "quantity",
+      "meaning": "固定x=0处的复数箭头"
+    },
+    {
+      "scope": "helix",
+      "channel": "dash",
+      "token": "neutral",
+      "role": "observer",
+      "meaning": "x=0处幅度1的参考圆，不是实体或轨道"
+    }
+  ],
+  "actions": [
+    {
+      "id": "rotate",
+      "kind": "observe",
+      "changes": [
+        "camera"
+      ],
+      "fixed": [
+        "time",
+        "wave",
+        "sample_position"
+      ],
+      "feedback": "拖动改变投影，保持模型不变"
+    },
+    {
+      "id": "time",
+      "kind": "time",
+      "changes": [
+        "time",
+        "phase"
+      ],
+      "fixed": [
+        "camera",
+        "sample_position",
+        "amplitude",
+        "wavelength"
+      ],
+      "feedback": "固定位置的箭头旋转，空间位置不动"
+    },
+    {
+      "id": "view",
+      "kind": "observe",
+      "changes": [
+        "camera"
+      ],
+      "fixed": [
+        "time",
+        "wave"
+      ],
+      "feedback": "选择整体或沿轴视角"
+    }
+  ],
+  "comparison": {
+    "required": false,
+    "reason": "完整波形与固定位置箭头同时显示，比较空间图样与局部值，不需要正常异常两工况。"
+  },
+  "preserved": [
+    {
+      "feature": "两个分量来自同一复数，直接旋转、暂停回看",
+      "status": "retained",
+      "evidence": "同一解析状态派生螺旋和固定位置箭头"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "tested",
+      "evidence": "解析模长不变已核对；参考https://facultystaff.richmond.edu/~ebunn/phys205/waves/，空间与分量轴明确分开。"
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "源码检查固定位置标记、复数箭头与空间图样来自同一解析模型；圆环仅为参考。"
+    },
+    {
+      "area": "interaction",
+      "status": "tested",
+      "evidence": "模拟DOM检查相机与时间独立、拖动取消、播放到终点；不等于浏览器或真机检查。"
+    },
+    {
+      "area": "layout",
+      "status": "pending",
+      "evidence": "尚未完成真实浏览器画面及手机多指触摸验证。"
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "尚未完成真实浏览器画面及手机多指触摸验证。"
+    }
+  ]
+}
