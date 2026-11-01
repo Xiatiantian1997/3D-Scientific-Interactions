@@ -1,0 +1,118 @@
+{
+  "version": "3.0",
+  "goal": "通过拆开和复合追踪三层材料及接触界面",
+  "model": {
+    "assumptions": "假想硅基底、氧化硅层、金属层；厚度夸张，拆开仅教学构造，不是剥离或沉积过程。",
+    "evidence": "显式教学几何；截面关系由球方程直接代入推导，不涉及实测工艺。"
+  },
+  "states": [
+    {
+      "id": "baseline",
+      "meaning": "初始观察"
+    },
+    {
+      "id": "adjusted",
+      "meaning": "拆开量或截面位置改变"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "film-stack",
+      "channel": "fill",
+      "token": "series-1",
+      "role": "identity",
+      "meaning": "金属层"
+    },
+    {
+      "scope": "film-stack",
+      "channel": "fill",
+      "token": "series-2",
+      "role": "identity",
+      "meaning": "氧化层"
+    }
+  ],
+  "actions": [
+    {
+      "id": "adjust",
+      "kind": "construct",
+      "changes": [
+        "presentation"
+      ],
+      "fixed": [
+        "material_identity",
+        "dimensions"
+      ],
+      "feedback": "拖条连续更新三维几何"
+    },
+    {
+      "id": "rotate",
+      "kind": "observe",
+      "changes": [
+        "camera"
+      ],
+      "fixed": [
+        "presentation",
+        "dimensions"
+      ],
+      "feedback": "单指跟手旋转，双指缩放"
+    },
+    {
+      "id": "reset",
+      "kind": "compare",
+      "changes": [
+        "presentation",
+        "camera"
+      ],
+      "fixed": [
+        "dimensions",
+        "material_identity"
+      ],
+      "feedback": "下方操作区空白短按复位整个演示，轻暗反馈"
+    }
+  ],
+  "comparison": {
+    "required": true,
+    "baseline": "baseline",
+    "target": "adjusted",
+    "action": "reset",
+    "fixed": [
+      "dimensions",
+      "material_identity"
+    ],
+    "placement": "同位置复位对照，操作区空白"
+  },
+  "preserved": [
+    {
+      "feature": "集中操作、整片空白复位、稳定颜色和深度遮挡",
+      "status": "retained",
+      "evidence": "统一的底部操作区与WebGL深度缓冲"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "tested",
+      "evidence": "几何所有端点输出有限；球截面由sqrt(1-h²)计算；各层间隙非负且厚度固定。"
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "材料与截面身份稳定；拆开是教学构造；截面上方隐藏属观察工具。"
+    },
+    {
+      "area": "interaction",
+      "status": "tested",
+      "evidence": "模拟DOM实际执行滑条、空白复位、拖动不误复位、左拖相机；实机多指尚待验。"
+    },
+    {
+      "area": "layout",
+      "status": "tested",
+      "evidence": "实际网格与GLSL经EGL/GLES深度缓冲渲染，查看320像素拆开态和中心截面；完整宿主排版待验。"
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "Android与实际宿主待验"
+    }
+  ]
+}
