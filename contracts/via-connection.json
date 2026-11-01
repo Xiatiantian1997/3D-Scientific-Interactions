@@ -1,0 +1,116 @@
+{
+  "version": "3.0",
+  "goal": "区分平面投影交叉与三维实际连通，通孔连接不同高度金属线。",
+  "model": {
+    "assumptions": "两条同种金属线位于y=-.55和+.55，中间绝缘材料隐藏。通孔为半径.19的金属圆柱，接触两线内表面。不计算电流，忽略寄生耦合。无/有通孔是结构对照，不是制造过程。",
+    "evidence": "imec官方semi-damascene文章：vias connect subsequent interconnect layers。https://www.imec-int.com/en/articles/imec-demonstrates-semi-damascene-interconnects-fully-self-aligned-vias-18nm-metal-pitch"
+  },
+  "states": [
+    {
+      "id": "baseline",
+      "meaning": "无通孔，两线没有直接导电连接"
+    },
+    {
+      "id": "connected",
+      "meaning": "有通孔，金属路径连续"
+    },
+    {
+      "id": "top",
+      "meaning": "俯视投影重叠，不改变连接状态"
+    }
+  ],
+  "encodings": [
+    {
+      "scope": "all",
+      "channel": "fill",
+      "token": "series-1",
+      "role": "identity",
+      "meaning": "同种金属，包含线与通孔"
+    }
+  ],
+  "actions": [
+    {
+      "id": "compare",
+      "kind": "compare",
+      "changes": [
+        "via_presence"
+      ],
+      "fixed": [
+        "camera",
+        "wire_positions",
+        "wire_material"
+      ],
+      "feedback": "原位置切换通孔存在与否，文字同步更新，不演示生长。"
+    },
+    {
+      "id": "observe",
+      "kind": "observe",
+      "changes": [
+        "camera"
+      ],
+      "fixed": [
+        "wire_positions",
+        "via_presence"
+      ],
+      "feedback": "拖动或观察角度滑条改变投影，双指缩放"
+    },
+    {
+      "id": "reset",
+      "kind": "observe",
+      "changes": [
+        "camera"
+      ],
+      "fixed": [
+        "wire_positions",
+        "via_presence"
+      ],
+      "feedback": "下方空白复位视角，保留当前有无通孔状态"
+    }
+  ],
+  "comparison": {
+    "required": true,
+    "baseline": "baseline",
+    "target": "connected",
+    "action": "compare",
+    "fixed": [
+      "camera",
+      "wire_positions",
+      "wire_material"
+    ],
+    "placement": "底部无通孔/有通孔同位置切换"
+  },
+  "preserved": [
+    {
+      "feature": "集中操作、空白复位视角、同位置结构对比、跟手旋转",
+      "status": "retained",
+      "evidence": "复位不清除通孔选择；颜色始终表示金属身份；深度缓冲负责遮挡。"
+    }
+  ],
+  "checks": [
+    {
+      "area": "model",
+      "status": "tested",
+      "evidence": "有无通孔、俯视/斜看/侧看共六态网格坐标有限；通孔半径.19小于线半宽.25，端部恰接上下内表面±.45。"
+    },
+    {
+      "area": "semantics",
+      "status": "reviewed",
+      "evidence": "全部金属同色；绝缘材料明确隐藏；不画电流点、不将有无通孔对照冒充生长动画。"
+    },
+    {
+      "area": "interaction",
+      "status": "tested",
+      "evidence": "模拟DOM执行结构切换、视角滑条、空白复位保留连接状态、拖动不复位与左拖方向。"
+    },
+    {
+      "area": "layout",
+      "status": "tested",
+      "evidence": "实际网格通过EGL/GLES渲染六态；查看320px默认斜看后改为更清楚的侧看。完整宿主排版待验。"
+    },
+    {
+      "area": "host",
+      "status": "pending",
+      "evidence": "Android真实多指手感、完整宿主布局未验。"
+    }
+  ]
+}
